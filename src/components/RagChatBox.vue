@@ -245,7 +245,7 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
- // 3. 为 highlight 函数添加参数和返回值类型注解
+  // 3. 为 highlight 函数添加参数和返回值类型注解
   highlight: (str: string, lang: string): string => {
     // 你的高亮逻辑 (例如使用 highlight.js 或 prismjs)
     // 假设你引入了 hljs
@@ -253,7 +253,7 @@ const md = new MarkdownIt({
     /* 示例逻辑开始 */
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return hljs.highlight(str, { language: lang }).value;
+        return hljs.highlight(str, { language: lang }).value
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (__) {}
     }
@@ -261,9 +261,9 @@ const md = new MarkdownIt({
 
     // 如果没有高亮库，直接返回转义后的字符串，或者返回原字符串
     // 必须确保这里返回的是 string
-    return str;
-  }
-});
+    return str
+  },
+})
 
 const preprocessMarkdown = (text: string) => {
   if (!text) return ''
@@ -344,6 +344,21 @@ const uploadFiles = async () => {
   }
 }
 
+// 封装一个生成 UUID 的函数，自带降级处理
+function generateUUID() {
+  // 如果当前环境支持原生 crypto.randomUUID，则直接使用
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+
+  // 降级方案：使用 Math.random 模拟生成 UUID (适用于 HTTP 等非安全上下文)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
 const sendQuery = async () => {
   if (!queryInput.value.trim() || isLoading.value) return
   const userText = queryInput.value
@@ -354,7 +369,7 @@ const sendQuery = async () => {
   startThinkingTimer()
   const lastIdx = messages.value.push({ role: 'assistant', content: '' }) - 1
   try {
-    const chatId = window.localStorage.getItem('rag_chat_id') || crypto.randomUUID()
+    const chatId = window.localStorage.getItem('rag_chat_id') || generateUUID()
     window.localStorage.setItem('rag_chat_id', chatId)
     const response = await fetch(
       `/api/chat?query=${encodeURIComponent(userText)}&chatId=${chatId}`,

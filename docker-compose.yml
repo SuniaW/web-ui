@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  web-ui:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: web-ui:latest      # 生成的镜像名称
+    container_name: web-ui-app # 容器名称
+    restart: always           # 宿主机重启后自动启动容器
+    ports:
+      - "80:80"               # 宿主机端口:容器端口
+    logging:                  # 限制日志大小，防止撑爆磁盘
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

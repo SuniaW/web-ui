@@ -1,5 +1,5 @@
 # --- 阶段一：编译阶段 ---
-FROM node:18-alpine as build-stage
+FROM node:18-alpine AS build-stage
 
 # 设置工作目录
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # --- 阶段二：运行阶段 ---
-FROM nginx:stable-alpine as production-stage
+FROM nginx:stable-alpine AS production-stage
 
 # 从第一阶段的成果物中复制 dist 文件夹到 Nginx 目录
 COPY --from=build-stage /app/dist /usr/share/nginx/html

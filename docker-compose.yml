@@ -1,16 +1,44 @@
 version: '3.8'
+
 services:
+  # 前端服务
   web-ui:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-    image: web-ui:latest      # 生成的镜像名称
-    container_name: web-ui-app # 容器名称
-    restart: always           # 宿主机重启后自动启动容器
+    image: web-ui:latest
+    container_name: web-ui-app
+    restart: always
     ports:
-      - "80:80"               # 宿主机端口:容器端口
-    logging:                  # 限制日志大小，防止撑爆磁盘
+      - "80:80"
+    depends_on:
+      - ai-rag-service # 确保后端先启动
+    logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - ai-network
+
+  # 后端服务 (Spring Boot)
+  ai-rag-service:
+    build:
+      context: ../spring-ai-rag # 指向同级的后端目录
+      dockerfile: Dockerfile
+    image: spring-ai-rag:latest
+    container_name: ai-rag-backend
+    restart: always
+    # 注意：不需要写 ports 映射到宿主机，Nginx 内部能通过 8080 访问它，更安全
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - ai-network
+
+# 创建一个内部网络，方便容器间通过服务名通信
+networks:
+  ai-network:
+    driver: bridge

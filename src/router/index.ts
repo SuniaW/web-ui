@@ -22,13 +22,6 @@ const router = createRouter({
       },
       props: true,
     },
-    {
-      path: '/chat/readme',
-      component: () => {
-        return import('../components/LiteRagPage.vue')
-      },
-      props: true,
-    },
   ],
 })
 

@@ -1,17 +1,27 @@
 <template>
   <div class="page-container">
-    <!-- 1. 顶部 Header - 更加精致的边框和背景 -->
-    <div class="chat-header">
+    <!-- 1. 顶部 Header - 精致玻璃态设计 -->
+    <div class="chat-header glass-effect">
+      <div class="header-bg-decoration">
+        <div class="header-orb orb-1"></div>
+        <div class="header-orb orb-2"></div>
+      </div>
+
       <div class="header-left">
         <div class="logo-wrapper">
-          <div class="logo-box">
+          <div class="logo-box glow-effect">
             <el-icon size="20"><Cpu /></el-icon>
           </div>
           <div class="title-wrapper">
-            <h2 class="title-text">技术站 · 智库问答</h2>
+            <h2 class="title-text">
+              <span class="gradient-title">技术站</span>
+              <span class="title-separator">·</span>
+              <span>智库问答</span>
+            </h2>
             <div class="status-badge">
               <span class="dot"></span>
-              RAG Engine V2.0
+              <span>RAG Engine V2.0</span>
+              <el-tag size="small" type="success" effect="dark" class="version-tag">在线</el-tag>
             </div>
           </div>
         </div>
@@ -22,14 +32,17 @@
           <el-popover
             v-if="uiFileList.length > 0"
             placement="bottom-end"
-            :width="320"
+            :width="360"
             trigger="hover"
             popper-class="custom-file-popover"
+            :show-arrow="false"
           >
             <template #reference>
-              <el-button link class="file-count-trigger">
+              <el-button link class="file-count-trigger glass-btn">
                 <div class="count-badge-wrapper">
-                  <el-icon><Files /></el-icon>
+                  <div class="icon-wrapper">
+                    <el-icon><Files /></el-icon>
+                  </div>
                   <span>待处理文档</span>
                   <span class="count-tag">{{ uiFileList.length }}</span>
                 </div>
@@ -38,19 +51,27 @@
 
             <div class="popover-file-container">
               <div class="popover-header">
-                <span class="title">已选文件清单</span>
-                <span class="sub-title">准备上传至知识库</span>
+                <div class="header-info">
+                  <el-icon class="header-icon"><FolderOpened /></el-icon>
+                  <div>
+                    <span class="title">已选文件清单</span>
+                    <span class="sub-title">准备上传至知识库</span>
+                  </div>
+                </div>
+                <el-tag size="small" :type="uiFileList.length > 0 ? 'primary' : 'info'">
+                  {{ uiFileList.length }} 个文件
+                </el-tag>
               </div>
 
               <div class="popover-list-wrapper">
                 <div v-for="file in uiFileList" :key="file.uid" class="popover-item">
                   <div class="file-info">
-                    <div class="file-icon-box">
+                    <div class="file-icon-box" :style="{ background: getFileIconColor(file.name) }">
                       <el-icon><Document /></el-icon>
                     </div>
                     <div class="file-details">
                       <span class="file-name" :title="file.name">{{ file.name }}</span>
-                      <span class="file-size">{{ ((file.size ?? 0) / 1024).toFixed(1) }} KB</span>
+                      <span class="file-size">{{ formatFileSize(file.size ?? 0) }}</span>
                     </div>
                   </div>
                   <div class="item-actions">
@@ -65,8 +86,15 @@
                   </div>
                 </div>
               </div>
+
+              <div class="popover-footer" v-if="uiFileList.length > 0">
+                <el-button type="primary" size="small" @click="uploadFiles" :loading="isUploading">
+                  立即上传
+                </el-button>
+              </div>
             </div>
           </el-popover>
+
           <el-upload
             action="#"
             multiple
@@ -77,45 +105,72 @@
             :show-file-list="false"
           >
             <template #trigger>
-              <el-button class="secondary-btn" round :icon="Link">选择文档</el-button>
+              <el-button class="secondary-btn glass-btn" round :icon="Link">选择文档</el-button>
             </template>
           </el-upload>
+
           <el-button
             type="primary"
-            class="primary-btn"
+            class="primary-btn glow-btn"
             round
             :disabled="selectedFiles.length === 0"
             :loading="isUploading"
             @click="uploadFiles"
           >
-            上传入库
+            <el-icon><UploadFilled /></el-icon>
+            <span>上传入库</span>
           </el-button>
         </div>
       </div>
     </div>
 
-    <!-- 批量上传进度条 - 细长简约设计 -->
-    <div v-if="isUploading" class="global-progress">
-      <el-progress :percentage="uploadPercent" :stroke-width="3" :show-text="false" />
-    </div>
+    <!-- 批量上传进度条 - 渐变细条设计 -->
+    <transition name="slide-down">
+      <div v-if="isUploading" class="global-progress">
+        <div class="progress-track">
+          <div class="progress-fill" :style="{ width: uploadPercent + '%' }">
+            <span class="progress-text">{{ uploadPercent }}%</span>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- 2. 中间：消息显示区 -->
     <div class="message-container" ref="chatContainer">
       <div class="message-list-inner">
-        <!-- 欢迎页 - 深度美化示例卡片 -->
+        <!-- 欢迎页 - 深度美化 -->
         <div v-if="messages.length === 0 && !isLoading" class="welcome-section">
           <div class="welcome-hero">
             <div class="hero-icon-container">
-              <div class="floating-icon">👩‍💻</div>
+              <div class="floating-icon-wrapper">
+                <div class="floating-icon">👩‍💻</div>
+                <div class="icon-ring"></div>
+                <div class="icon-ring ring-2"></div>
+              </div>
             </div>
-            <h1 class="welcome-title">技术文档智能助手</h1>
-            <p class="welcome-desc">上传规格书或代码，为您提供精准的关联分析。</p>
+            <h1 class="welcome-title">
+              <span class="gradient-text">技术文档</span>
+              <span>智能助手</span>
+            </h1>
+            <p class="welcome-desc">
+              上传规格书或代码文档，基于 <strong>RAG 技术</strong> 为您提供精准的关联分析与智能问答。
+            </p>
+
+            <div class="welcome-features">
+              <div class="feature-item" v-for="(feature, index) in welcomeFeatures" :key="index">
+                <div class="feature-icon">{{ feature.icon }}</div>
+                <span>{{ feature.text }}</span>
+              </div>
+            </div>
           </div>
 
           <div class="example-section">
             <div class="section-divider">
               <span class="divider-line"></span>
-              <span class="divider-text">您可以这样问我</span>
+              <span class="divider-text">
+                <el-icon><Lightning /></el-icon>
+                您可以这样问我
+              </span>
               <span class="divider-line"></span>
             </div>
             <div class="example-grid">
@@ -124,11 +179,14 @@
                 :key="index"
                 class="modern-card"
                 @click="handleExampleClick(item.query)"
+                :style="{ animationDelay: `${index * 0.1}s` }"
               >
                 <div class="card-accent" :style="{ background: item.color }"></div>
                 <div class="card-content">
                   <div class="card-header">
-                    <span class="card-icon">{{ item.icon }}</span>
+                    <div class="card-icon-wrapper" :style="{ background: item.color + '20' }">
+                      <span class="card-icon">{{ item.icon }}</span>
+                    </div>
                     <span class="card-title">{{ item.query }}</span>
                   </div>
                   <div class="card-action">
@@ -136,6 +194,7 @@
                     <el-icon><ArrowRight /></el-icon>
                   </div>
                 </div>
+                <div class="card-hover-glow"></div>
               </div>
             </div>
           </div>
@@ -144,11 +203,17 @@
         <!-- 消息列表 -->
         <div v-for="(msg, index) in messages" :key="index" :class="['msg-wrapper', msg.role]">
           <div class="avatar-container">
-            <el-avatar :size="40" :src="msg.role === 'assistant' ? botAvatar : userAvatar" />
+            <div class="avatar-wrapper" :class="msg.role">
+              <el-avatar :size="40" :src="msg.role === 'assistant' ? botAvatar : userAvatar" />
+              <div class="avatar-status" :class="msg.role"></div>
+            </div>
           </div>
           <div class="msg-content-area">
             <div class="msg-meta" v-if="msg.role === 'assistant'">
-              <span class="sender-name">智库助手</span>
+              <span class="sender-name">
+                <el-icon><Cpu /></el-icon>
+                智库助手
+              </span>
               <span v-if="msg.duration" class="stat-badge">
                 <el-icon><Timer /></el-icon>
                 {{ msg.duration.toFixed(1) }}s
@@ -163,42 +228,73 @@
               <div v-if="msg.role === 'assistant'" v-html="renderMarkdown(msg.content)"></div>
               <div v-else class="user-text">{{ msg.content }}</div>
             </div>
+            <div class="msg-actions" v-if="msg.role === 'assistant'">
+              <el-button link size="small" @click="copyMessage(msg.content)">
+                <el-icon><CopyDocument /></el-icon>
+                复制
+              </el-button>
+              <el-button link size="small" @click="handleFeedback(msg.content, 'good')">
+                <el-icon><Star /></el-icon>
+              </el-button>
+              <el-button link size="small" @click="handleFeedback(msg.content, 'bad')">
+                <el-icon><CloseBold /></el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
 
         <!-- 思考中状态 -->
-        <div v-if="isLoading && isWaiting" class="msg-wrapper assistant">
-          <div class="avatar-container">
-            <el-avatar :size="40" :src="botAvatar" />
-          </div>
-          <div class="msg-content-area">
-            <div class="thinking-card">
-              <div class="loader-dots"><span></span><span></span><span></span></div>
-              <span class="thinking-text"
-                >AI 正在思考... ({{ currentThinkingTime.toFixed(1) }}s)</span
-              >
+        <transition name="fade">
+          <div v-if="isLoading && isWaiting" class="msg-wrapper assistant">
+            <div class="avatar-container">
+              <div class="avatar-wrapper assistant">
+                <el-avatar :size="40" :src="botAvatar" />
+                <div class="avatar-status assistant thinking"></div>
+              </div>
+            </div>
+            <div class="msg-content-area">
+              <div class="thinking-card">
+                <div class="thinking-loader">
+                  <div class="loader-dot dot-1"></div>
+                  <div class="loader-dot dot-2"></div>
+                  <div class="loader-dot dot-3"></div>
+                </div>
+                <span class="thinking-text">
+                  AI 正在思考
+                  <span class="thinking-dots">
+                    <span>.</span><span>.</span><span>.</span>
+                  </span>
+                  <span class="thinking-time">({{ currentThinkingTime.toFixed(1) }}s)</span>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
     </div>
 
     <!-- 3. 底部：输入区 - 悬浮式设计 -->
     <div class="footer-area">
       <div class="input-container-wrapper">
-        <div class="input-card-refined">
+        <div class="input-card-refined glass-effect">
           <el-input
             v-model="queryInput"
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 6 }"
-            placeholder="在此输入您的疑问..."
+            placeholder="在此输入您的疑问，按 Enter 发送..."
             @keydown.enter.prevent="sendQuery"
           />
           <div class="input-bottom-bar">
             <div class="bar-left">
               <div class="mode-tag">
-                <el-icon><Files /></el-icon>
+                <div class="mode-icon">
+                  <el-icon><Files /></el-icon>
+                </div>
                 <span>多文档分析模式</span>
+              </div>
+              <div class="file-indicator" v-if="uiFileList.length > 0">
+                <span class="indicator-dot"></span>
+                {{ uiFileList.length }} 个文档已就绪
               </div>
             </div>
             <div class="bar-right">
@@ -207,13 +303,15 @@
                 type="danger"
                 circle
                 :icon="CircleClose"
-                class="stop-btn"
+                class="stop-btn glow-btn"
                 @click="stopGeneration"
-              />
+              >
+                <span class="btn-text">停止</span>
+              </el-button>
               <el-button
                 v-else
                 type="primary"
-                class="send-btn"
+                class="send-btn glow-btn"
                 :disabled="!queryInput.trim()"
                 @click="sendQuery"
               >
@@ -223,15 +321,33 @@
             </div>
           </div>
         </div>
-        <div class="input-footer-tip">内容由 AI 生成，请核实重要信息</div>
+        <div class="input-footer-tip">
+          <el-icon><Warning /></el-icon>
+          <span>内容由 AI 生成，请核实重要信息</span>
+        </div>
       </div>
     </div>
+
+    <!-- 回到顶部按钮 -->
+    <transition name="fade">
+      <el-button
+        v-show="showBackToTop"
+        circle
+        class="back-to-top glow-btn"
+        @click="scrollToTop"
+      >
+        <el-icon><ArrowUp /></el-icon>
+      </el-button>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onUnmounted } from 'vue'
-import { Link, Timer, Files, CircleClose, Document } from '@element-plus/icons-vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
+import {
+  Link, Timer, Files, CircleClose, Document, FolderOpened, UploadFilled,
+  Lightning, ArrowRight, CopyDocument, Star, CloseBold, Warning, ArrowUp, Cpu
+} from '@element-plus/icons-vue'
 import axios from 'axios'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
@@ -245,22 +361,12 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
-  // 3. 为 highlight 函数添加参数和返回值类型注解
   highlight: (str: string, lang: string): string => {
-    // 你的高亮逻辑 (例如使用 highlight.js 或 prismjs)
-    // 假设你引入了 hljs
-    // import hljs from 'highlight.js';
-    /* 示例逻辑开始 */
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(str, { language: lang }).value
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (__) {}
     }
-    /* 示例逻辑结束 */
-
-    // 如果没有高亮库，直接返回转义后的字符串，或者返回原字符串
-    // 必须确保这里返回的是 string
     return str
   },
 })
@@ -290,15 +396,54 @@ const isLoading = ref(false)
 const isWaiting = ref(false)
 const currentThinkingTime = ref(0)
 const chatContainer = ref<HTMLElement | null>(null)
+const showBackToTop = ref(false)
 let thinkingTimer: number | null = null
 let abortController = new AbortController()
 
-const exampleQuestions = [
-  { icon: '📝', query: 'docker简介', color: '#3b82f6' },
-  { icon: '🛡️', query: 'milvus简介', color: '#10b981' },
-  { icon: '🚀', query: 'ollama简介', color: '#f59e0b' },
-  { icon: '🔍', query: 'spring AI简介', color: '#8b5cf6' },
+// 欢迎特性
+const welcomeFeatures = [
+  { icon: '📚', text: '知识库检索' },
+  { icon: '⚡', text: '秒级响应' },
+  { icon: '🔒', text: '私有部署' },
+  { icon: '📊', text: '精准分析' }
 ]
+
+// 示例问题
+const exampleQuestions = [
+  { icon: '📝', query: 'docker 简介', color: '#3b82f6' },
+  { icon: '🛡️', query: 'milvus 简介', color: '#10b981' },
+  { icon: '🚀', query: 'ollama 简介', color: '#f59e0b' },
+  { icon: '🔍', query: 'spring AI 简介', color: '#8b5cf6' },
+]
+
+// 文件类型颜色映射
+const getFileIconColor = (filename: string) => {
+  const ext = filename.split('.').pop()?.toLowerCase()
+  const colorMap: Record<string, string> = {
+    pdf: '#ef4444',
+    doc: '#3b82f6',
+    docx: '#3b82f6',
+    txt: '#6b7280',
+    md: '#10b981',
+    java: '#f59e0b',
+    js: '#fbbf24',
+    ts: '#3b82f6',
+    py: '#10b981',
+    json: '#8b5cf6',
+    yaml: '#f59e0b',
+    yml: '#f59e0b',
+  }
+  return colorMap[ext || ''] || '#6b7280'
+}
+
+// 格式化文件大小
+const formatFileSize = (bytes: number) => {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+}
 
 const handleFileChange = (file: UploadFile, fileList: UploadFile[]) => {
   selectedFiles.value = fileList.map((f) => f.raw as File)
@@ -344,14 +489,10 @@ const uploadFiles = async () => {
   }
 }
 
-// 封装一个生成 UUID 的函数，自带降级处理
 function generateUUID() {
-  // 如果当前环境支持原生 crypto.randomUUID，则直接使用
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID()
   }
-
-  // 降级方案：使用 Math.random 模拟生成 UUID (适用于 HTTP 等非安全上下文)
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0
     const v = c === 'x' ? r : (r & 0x3) | 0x8
@@ -369,8 +510,6 @@ const sendQuery = async () => {
   startThinkingTimer()
 
   const lastIdx = messages.value.push({ role: 'assistant', content: '' }) - 1
-
-  // 用于处理断包的缓冲区
   let buffer = ""
 
   try {
@@ -396,20 +535,13 @@ const sendQuery = async () => {
         isWaiting.value = false
       }
 
-      // 1. 将新到的字节流拼接到缓冲区，并开启 stream 模式防止乱码
       buffer += decoder.decode(value, { stream: true })
-
-      // 2. 按行切割缓冲区内容
       let lines = buffer.split('\n')
-
-      // 3. 💡 关键：将最后一行（可能是不完整的）留回缓冲区，下次循环拼接
       buffer = lines.pop() || ""
 
-      // 4. 处理所有完整的行
       for (const line of lines) {
         const trimmedLine = line.trim()
         if (trimmedLine.startsWith('data:')) {
-          // 截取 data: 之后的所有内容并追加
           const content = trimmedLine.substring(5)
           messages.value[lastIdx]!.content += content
           scrollToBottom()
@@ -417,7 +549,6 @@ const sendQuery = async () => {
       }
     }
 
-    // 最后处理一遍缓冲区剩余内容（如果有的话）
     if (buffer.trim().startsWith('data:')) {
       messages.value[lastIdx]!.content += buffer.trim().substring(5)
     }
@@ -435,54 +566,178 @@ const handleExampleClick = (query: string) => {
   queryInput.value = query
   sendQuery()
 }
+
 const startThinkingTimer = () => {
   currentThinkingTime.value = 0
   thinkingTimer = window.setInterval(() => {
     currentThinkingTime.value += 0.1
   }, 100)
 }
+
 const stopThinkingTimer = () => {
   if (thinkingTimer) clearInterval(thinkingTimer)
 }
+
 const stopGeneration = () => {
   abortController.abort()
   abortController = new AbortController()
   isLoading.value = false
   isWaiting.value = false
   stopThinkingTimer()
+  ElMessage.info('生成已停止')
 }
+
 const scrollToBottom = () => {
   nextTick(() => {
     if (chatContainer.value) chatContainer.value.scrollTop = chatContainer.value.scrollHeight
   })
 }
-onUnmounted(() => stopThinkingTimer())
+
+const scrollToTop = () => {
+  chatContainer.value?.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const copyMessage = async (content: string) => {
+  try {
+    await navigator.clipboard.writeText(content)
+    ElMessage.success('已复制到剪贴板')
+  } catch (err) {
+    ElMessage.error('复制失败')
+  }
+}
+
+const handleFeedback = (content: string, type: 'good' | 'bad') => {
+  ElMessage.success(type === 'good' ? '感谢您的好评！' : '已记录反馈，我们会改进')
+}
+
+const handleScroll = () => {
+  if (chatContainer.value) {
+    showBackToTop.value = chatContainer.value.scrollTop > 300
+  }
+}
+
+onMounted(() => {
+  chatContainer.value?.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  stopThinkingTimer()
+  chatContainer.value?.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped>
-/* 全局基础样式 */
+/* ==================== CSS 变量定义 ==================== */
+.page-container{
+  --primary-color: #409EFF;
+  --primary-light: #66b1ff;
+  --primary-dark: #337ecc;
+  --success-color: #67C23A;
+  --warning-color: #E6A23C;
+  --danger-color: #F56C6C;
+  --info-color: #909399;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-accent: linear-gradient(135deg, #409EFF 0%, #06b6d4 100%);
+  --gradient-success: linear-gradient(135deg, #67C23A 0%, #52c41a 100%);
+}
+
+/* ==================== 容器与整体布局 ==================== */
 .page-container {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 60px);
-  background-color: #f9fafb;
-  color: #1f2937;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f6 50%, #f1f5f9 100%);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  overflow: auto;
 }
 
-/* Header 优化 */
+.page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(64, 158, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(102, 126, 234, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==================== 玻璃态效果 ==================== */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== 顶部 Header ==================== */
 .chat-header {
   flex-shrink: 0;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  height: 72px;
   padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   z-index: 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.header-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.4;
+}
+
+.orb-1 {
+  width: 200px;
+  height: 200px;
+  background: rgba(64, 158, 255, 0.2);
+  top: -50%;
+  left: 10%;
+}
+
+.orb-2 {
+  width: 150px;
+  height: 150px;
+  background: rgba(102, 126, 234, 0.2);
+  bottom: -30%;
+  right: 15%;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
 }
 
 .logo-wrapper {
@@ -492,141 +747,369 @@ onUnmounted(() => stopThinkingTimer())
 }
 
 .logo-box {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-accent);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+}
+
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--gradient-accent);
+  border-radius: 14px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-effect:hover::after {
+  opacity: 0.5;
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .title-text {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gradient-title {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-separator {
+  color: var(--text-muted);
 }
 
 .status-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #3b82f6;
-  background: #eff6ff;
-  padding: 2px 8px;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--success-color);
+  background: rgba(103, 194, 58, 0.1);
+  padding: 3px 10px;
   border-radius: 20px;
-  margin-top: 2px;
+  width: fit-content;
 }
 
 .status-badge .dot {
-  width: 6px;
-  height: 6px;
-  background: #3b82f6;
+  width: 7px;
+  height: 7px;
+  background: var(--success-color);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.5;
-  }
+.version-tag {
+  margin-left: 4px;
 }
 
-/* 上传动作区 */
+@keyframes pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* ==================== 上传动作区 ==================== */
+.upload-actions {
+  display: flex;
+  align-items: center;
+}
+
 .action-buttons {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+}
+
+.glass-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: var(--primary-color) !important;
+  transform: translateY(-1px);
 }
 
 .file-count-trigger {
-  color: #6b7280 !important;
+  color: var(--text-secondary) !important;
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s;
+  padding: 8px 12px !important;
 }
 
-.file-count-trigger:hover {
-  color: #3b82f6 !important;
+.count-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-wrapper {
+  width: 28px;
+  height: 28px;
+  background: rgba(64, 158, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.count-tag {
+  background: var(--gradient-accent);
+  color: white;
+  font-size: 11px;
+  padding: 0 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
 }
 
 .secondary-btn {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
-  color: #374151 !important;
+  color: var(--text-secondary) !important;
   font-weight: 500;
 }
 
 .primary-btn {
-  background: #3b82f6 !important;
+  background: var(--gradient-accent) !important;
   border: none !important;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* 消息容器 */
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+}
+
+/* ==================== 进度条 ==================== */
+.global-progress {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 32px;
+}
+
+.progress-track {
+  height: 4px;
+  background: rgba(226, 232, 240, 0.8);
+  border-radius: 2px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  position: relative;
+}
+
+.progress-text {
+  font-size: 10px;
+  color: white;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.progress-fill:hover .progress-text {
+  opacity: 1;
+}
+
+/* ==================== 消息容器 ==================== */
 .message-container {
   flex: 1;
-  max-height: 360px;
-  padding: 10px 0;
+  padding: 20px 0;
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.message-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.message-container::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.8);
+  border-radius: 3px;
 }
 
 .message-list-inner {
-  max-width: 840px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* 欢迎界面 */
+/* ==================== 欢迎界面 ==================== */
+.welcome-section {
+  padding: 40px 20px;
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .welcome-hero {
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 40px;
 }
 
 .hero-icon-container {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.floating-icon-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .floating-icon {
-  font-size: 48px;
+  font-size: 56px;
   animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.icon-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(64, 158, 255, 0.2);
+  border-radius: 50%;
+  animation: ringPulse 2s ease-in-out infinite;
+}
+
+.ring-2 {
+  width: 120px;
+  height: 120px;
+  animation-delay: -1s;
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.2; }
 }
 
 .welcome-title {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
-  color: #111827;
-  margin-bottom: 12px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.welcome-title .gradient-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .welcome-desc {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 16px;
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.welcome-desc strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.welcome-features {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.1);
+}
+
+.feature-icon {
+  font-size: 18px;
+}
+
+/* ==================== 示例卡片 ==================== */
+.example-section {
+  margin-top: 40px;
 }
 
 .section-divider {
@@ -639,39 +1122,44 @@ onUnmounted(() => stopThinkingTimer())
 
 .divider-line {
   height: 1px;
-  background: #e5e7eb;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
   flex: 1;
-  max-width: 100px;
+  max-width: 120px;
 }
 
 .divider-text {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* 示例卡片网格 */
 .example-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 12px;
 }
 
 .modern-card {
-  background: white;
-  border: 1px solid #f3f4f6;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
 }
 
 .modern-card:hover {
   transform: translateY(-4px);
-  border-color: #3b82f6;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-lg);
 }
 
 .card-accent {
@@ -680,7 +1168,7 @@ onUnmounted(() => stopThinkingTimer())
 }
 
 .card-content {
-  padding: 4px;
+  padding: 14px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -690,33 +1178,60 @@ onUnmounted(() => stopThinkingTimer())
 .card-header {
   display: flex;
   align-items: center;
-  gap: 2px;
-  margin-bottom: 2px;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.card-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .card-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .card-title {
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .card-action {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: color 0.3s ease;
 }
 
 .modern-card:hover .card-action {
-  color: #3b82f6;
+  color: var(--primary-color);
 }
 
-/* 聊天气泡样式 */
+.card-hover-glow {
+  position: absolute;
+  bottom: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(64, 158, 255, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-card:hover .card-hover-glow {
+  opacity: 1;
+}
+
+/* ==================== 消息气泡 ==================== */
 .msg-wrapper {
   display: flex;
   gap: 16px;
@@ -725,147 +1240,209 @@ onUnmounted(() => stopThinkingTimer())
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .msg-wrapper.user {
   flex-direction: row-reverse;
 }
 
+.avatar-container {
+  flex-shrink: 0;
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.avatar-status {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.avatar-status.user {
+  background: var(--success-color);
+}
+
+.avatar-status.assistant {
+  background: var(--primary-color);
+}
+
+.avatar-status.assistant.thinking {
+  background: var(--warning-color);
+  animation: pulse 1s infinite;
+}
+
 .msg-content-area {
-  max-width: 85%;
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .msg-meta {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 6px;
 }
 
 .sender-name {
   font-size: 13px;
-  font-weight: 700;
-  color: #374151;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .stat-badge {
   font-size: 11px;
-  color: #3b82f6;
-  background: #eff6ff;
-  padding: 1px 6px;
-  border-radius: 4px;
+  color: var(--primary-color);
+  background: rgba(64, 158, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .msg-bubble {
-  padding: 14px 18px;
+  padding: 16px 20px;
   font-size: 15px;
-  line-height: 1.6;
-  border-radius: 18px;
+  line-height: 1.7;
+  border-radius: 20px;
   position: relative;
 }
 
 .user-bubble {
-  background: #3b82f6;
+  background: var(--gradient-accent);
   color: white;
-  border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.25);
 }
 
 .assistant-bubble {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-top-left-radius: 4px;
-  color: #1f2937;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-color);
+  border-top-left-radius: 6px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
 }
 
-/* 思考中状态美化 */
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.msg-wrapper:hover .msg-actions {
+  opacity: 1;
+}
+
+.msg-actions .el-button {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.msg-actions .el-button:hover {
+  color: var(--primary-color);
+}
+
+/* ==================== 思考中状态 ==================== */
 .thinking-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  padding: 12px 20px;
-  border-radius: 18px;
-  border-top-left-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-color);
+  padding: 14px 22px;
+  border-radius: 20px;
+  border-top-left-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: fit-content;
+  box-shadow: var(--shadow-sm);
 }
 
-.loader-dots {
+.thinking-loader {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 
-.loader-dots span {
-  width: 6px;
-  height: 6px;
-  background: #3b82f6;
+.loader-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gradient-accent);
   border-radius: 50%;
-  animation: dot-pulse 1.4s infinite ease-in-out both;
+  animation: dotBounce 1.4s infinite ease-in-out both;
 }
 
-.loader-dots span:nth-child(1) {
-  animation-delay: -0.32s;
-}
-.loader-dots span:nth-child(2) {
-  animation-delay: -0.16s;
-}
+.dot-1 { animation-delay: -0.32s; }
+.dot-2 { animation-delay: -0.16s; }
 
-@keyframes dot-pulse {
-  0%,
-  80%,
-  100% {
-    transform: scale(0);
-    opacity: 0.3;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
 }
 
 .thinking-text {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* 底部输入框优化 */
+.thinking-dots span {
+  animation: blink 1.4s infinite;
+  opacity: 0;
+}
+
+.thinking-dots span:nth-child(1) { animation-delay: 0s; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.thinking-time {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ==================== 底部输入区 ==================== */
 .footer-area {
   flex-shrink: 0;
-  padding: 20px 0 0px;
-  background: linear-gradient(transparent, #f9fafb 40%);
+  padding: 16px 0 24px;
+  background: linear-gradient(transparent, rgba(249, 250, 251, 0.9) 40%);
+  position: relative;
+  z-index: 10;
 }
 
 .input-container-wrapper {
-  max-width: 840px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
 .input-card-refined {
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 20px;
-  padding: 12px 16px;
+  border-radius: 24px;
+  padding: 14px 18px;
   transition: all 0.3s;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .input-card-refined:focus-within {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 24px rgba(59, 130, 246, 0.12);
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 30px rgba(64, 158, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 :deep(.el-textarea__inner) {
@@ -873,17 +1450,28 @@ onUnmounted(() => stopThinkingTimer())
   box-shadow: none !important;
   font-size: 15px;
   padding: 4px 0 !important;
-  color: #1f2937;
+  color: var(--text-primary);
   resize: none !important;
+  background: transparent !important;
+}
+
+:deep(.el-textarea__inner)::placeholder {
+  color: var(--text-muted);
 }
 
 .input-bottom-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #f3f4f6;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .mode-tag {
@@ -891,104 +1479,132 @@ onUnmounted(() => stopThinkingTimer())
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
-.send-btn {
-  height: 36px !important;
-  padding: 0 20px !important;
+.mode-icon {
+  width: 24px;
+  height: 24px;
+  background: rgba(64, 158, 255, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.file-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--success-color);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.bar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stop-btn, .send-btn {
+  height: 38px !important;
+  padding: 0 22px !important;
   font-weight: 600 !important;
   border-radius: 12px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+.send-btn {
+  background: var(--gradient-accent) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .input-footer-tip {
   text-align: center;
-  font-size: 11px;
-  color: #9ca3af;
-  margin-top: 8px;
-}
-
-/* 进度条 */
-.global-progress {
-  position: absolute;
-  top: 63px;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
-
-/* Markdown 样式微调 */
-:deep(.markdown-body) {
-  font-size: 15px;
-  color: #1f2937;
-}
-
-:deep(.markdown-body pre) {
-  background-color: #1e293b;
-  border-radius: 8px;
-  margin: 12px 0;
-}
-
-/* --- 触发按钮美化 --- */
-.file-count-trigger {
-  border-radius: 8px !important;
-  transition: all 0.2s !important;
-}
-
-.file-count-trigger:hover {
-  background: #f3f4f6 !important;
-}
-
-.count-badge-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #4b5563;
-}
-
-.count-tag {
-  background: #3b82f6;
-  color: white;
-  font-size: 11px;
-  padding: 0 6px;
-  border-radius: 10px;
-  min-width: 18px;
-  height: 18px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  gap: 6px;
 }
 
-/* --- Popover 内容区 --- */
+/* ==================== Popover 美化 ==================== */
 .popover-file-container {
-  padding: 4px;
+  padding: 8px;
 }
 
 .popover-header {
-  padding: 8px 12px 12px;
-  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 12px;
   margin-bottom: 8px;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--gradient-accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .popover-header .title {
   display: block;
   font-size: 14px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .popover-header .sub-title {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
-/* 列表滚动条优化 */
 .popover-list-wrapper {
   max-height: 280px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 4px;
 }
 
 .popover-list-wrapper::-webkit-scrollbar {
@@ -996,11 +1612,10 @@ onUnmounted(() => stopThinkingTimer())
 }
 
 .popover-list-wrapper::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 4px;
+  background: var(--border-color);
+  border-radius: 2px;
 }
 
-/* 单个文件条目 */
 .popover-item {
   display: flex;
   align-items: center;
@@ -1008,12 +1623,11 @@ onUnmounted(() => stopThinkingTimer())
   padding: 10px;
   border-radius: 10px;
   transition: all 0.2s;
-  margin-bottom: 2px;
-  group: hover; /* 逻辑上配合 hover */
+  margin-bottom: 4px;
 }
 
 .popover-item:hover {
-  background-color: #f8fafc;
+  background-color: rgba(248, 250, 252, 0.8);
 }
 
 .file-info {
@@ -1025,15 +1639,14 @@ onUnmounted(() => stopThinkingTimer())
 }
 
 .file-icon-box {
-  width: 32px;
-  height: 32px;
-  background: #eff6ff;
-  color: #3b82f6;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 10px;
   flex-shrink: 0;
+  color: white;
 }
 
 .file-details {
@@ -1044,7 +1657,7 @@ onUnmounted(() => stopThinkingTimer())
 
 .file-name {
   font-size: 13px;
-  color: #374151;
+  color: var(--text-primary);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -1053,33 +1666,194 @@ onUnmounted(() => stopThinkingTimer())
 
 .file-size {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
-/* 删除按钮交互 */
 .remove-btn {
-  opacity: 0; /* 默认隐藏 */
-  padding: 4px !important;
+  opacity: 0;
+  padding: 6px !important;
   transition: all 0.2s !important;
 }
 
 .popover-item:hover .remove-btn {
-  opacity: 1; /* 鼠标移入条目时显示 */
+  opacity: 1;
 }
 
 .remove-btn:hover {
-  background: #fee2e2 !important;
-  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: var(--danger-color) !important;
   border-radius: 50%;
 }
 
-/* 全局覆盖 Element Plus Popover 样式 (可选) */
+.popover-footer {
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* ==================== 回到顶部按钮 ==================== */
+.back-to-top {
+  position: fixed;
+  bottom: 100px;
+  right: 35px;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  width: 46px;
+  height: 46px;
+  border: none;
+  background: var(--gradient-accent);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.back-to-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(64, 158, 255, 0.4);
+}
+
+/* ==================== 动画过渡 ==================== */
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* ==================== Markdown 样式 ==================== */
+:deep(.markdown-body) {
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+:deep(.markdown-body pre) {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+:deep(.markdown-body code) {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+:deep(.markdown-body p) {
+  margin: 8px 0;
+}
+
+:deep(.markdown-body ul),
+:deep(.markdown-body ol) {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+:deep(.markdown-body blockquote) {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 16px;
+  color: var(--text-secondary);
+  background: rgba(64, 158, 255, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+
+/* ==================== 移动端适配 ==================== */
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  .title-text {
+    font-size: 15px;
+  }
+
+  .status-badge {
+    display: none;
+  }
+
+  .action-buttons {
+    gap: 6px;
+  }
+
+  .secondary-btn span,
+  .primary-btn span {
+    display: none;
+  }
+
+  .message-container {
+    padding: 16px 0;
+  }
+
+  .message-list-inner {
+    padding: 0 16px;
+  }
+
+  .welcome-title {
+    font-size: 24px;
+  }
+
+  .welcome-desc {
+    font-size: 14px;
+  }
+
+  .example-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .msg-content-area {
+    max-width: 85%;
+  }
+
+  .msg-actions {
+    opacity: 1;
+  }
+
+  .input-container-wrapper {
+    padding: 0 16px;
+  }
+
+  .mode-tag span {
+    display: none;
+  }
+
+  .file-indicator {
+    display: none;
+  }
+
+  .send-btn span {
+    display: none;
+  }
+
+  .back-to-top {
+    bottom: 80px;
+    right: 20px;
+  }
+}
+
+/* ==================== 全局 Popover 覆盖 ==================== */
 :global(.el-popover.custom-file-popover) {
-  padding: 12px !important;
+  padding: 0 !important;
   border-radius: 16px !important;
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid #e5e7eb !important;
+  box-shadow: var(--shadow-xl) !important;
+  border: 1px solid var(--border-color) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
 }
 </style>

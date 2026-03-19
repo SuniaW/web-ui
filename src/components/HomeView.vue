@@ -2791,9 +2791,8 @@ onUnmounted(() => {
 
 .project-time {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 60px;
+  left: 35px;
+  top: -20px;
   text-align: right;
   font-size: 0.85rem;
   color: var(--text-muted);

@@ -464,7 +464,7 @@
           <div class="author-content">
             <div class="author-avatar">
               <div class="avatar-placeholder">
-                <el-icon><UserFilled /></el-icon>
+                <span class="avatar-text">汪</span>
                 <div class="avatar-ring"></div>
               </div>
             </div>
@@ -495,6 +495,111 @@
                   {{ link.name }}
                 </el-button>
               </div>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- 个人优势 -->
+        <el-card class="advantage-card glass-effect" style="margin-top: 30px;">
+          <template #header>
+            <div class="card-header">
+              <div class="header-left">
+                <span class="header-icon">💡</span>
+                <span>个人优势</span>
+              </div>
+              <el-tag type="primary" size="small" effect="dark">12 年专业经验</el-tag>
+            </div>
+          </template>
+          <div class="advantage-grid">
+            <div class="advantage-item" v-for="(item, index) in advantages" :key="index" :style="{ animationDelay: `${index * 0.1}s` }">
+              <div class="advantage-number">{{ index + 1 }}</div>
+              <div class="advantage-content">
+                <p>{{ item }}</p>
+              </div>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- 项目经历展示 -->
+        <el-card class="project-card glass-effect" style="margin-top: 30px;">
+          <template #header>
+            <div class="card-header">
+              <div class="header-left">
+                <span class="header-icon">🎯</span>
+                <span>代表项目经历</span>
+              </div>
+              <el-tag type="primary" size="small" effect="dark">12 年专业经验</el-tag>
+            </div>
+          </template>
+          <div class="project-timeline">
+            <div class="project-item" v-for="(project, index) in projects" :key="project.name" :style="{ animationDelay: `${index * 0.1}s` }">
+              <div class="project-time">{{ project.time }}</div>
+              <div class="project-dot"></div>
+              <div class="project-content">
+                <h4>{{ project.name }}</h4>
+                <p class="project-company">{{ project.company }}</p>
+                <div class="project-tags">
+                  <el-tag v-for="tech in project.technologies" :key="tech" size="small" class="project-tech-tag">
+                    {{ tech }}
+                  </el-tag>
+                </div>
+                <ul class="project-achievements">
+                  <li v-for="achievement in project.achievements" :key="achievement">
+                    <el-icon class="achievement-icon"><Check /></el-icon>
+                    <span>{{ achievement }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- 专业技能展示 -->
+        <el-card class="skills-card glass-effect" style="margin-top: 30px;">
+          <template #header>
+            <div class="card-header">
+              <div class="header-left">
+                <span class="header-icon">🛠️</span>
+                <span>专业技能</span>
+              </div>
+              <el-tag type="success" size="small" effect="dark">全栈能力</el-tag>
+            </div>
+          </template>
+          <div class="skills-grid">
+            <div class="skill-category" v-for="(category, index) in skills" :key="category.name" :style="{ animationDelay: `${index * 0.1}s` }">
+              <div class="skill-header">
+                <span class="skill-icon">{{ category.icon }}</span>
+                <h4>{{ category.name }}</h4>
+                <el-tag :type="category.level === '精通' ? 'danger' : category.level === '熟练' ? 'warning' : 'info'" size="small">
+                  {{ category.level }}
+                </el-tag>
+              </div>
+              <div class="skill-items">
+                <span class="skill-item" v-for="item in category.items" :key="item">{{ item }}</span>
+              </div>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- 教育背景 -->
+        <el-card class="education-card glass-effect" style="margin-top: 30px;">
+          <template #header>
+            <div class="card-header">
+              <div class="header-left">
+                <span class="header-icon">🎓</span>
+                <span>教育背景</span>
+              </div>
+            </div>
+          </template>
+          <div class="education-item">
+            <div class="education-school">
+              <span class="school-icon">🏫</span>
+              <span class="school-name">哈尔滨师范大学</span>
+            </div>
+            <div class="education-info">
+              <span class="education-major">数字媒体技术</span>
+              <span class="education-degree">本科</span>
+              <span class="education-time">2010.09 - 2014.07</span>
             </div>
           </div>
         </el-card>
@@ -539,14 +644,13 @@
 </template>
 
 <script setup lang="ts">
-// 保持原有 script 不变，只优化样式
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
   ChatDotRound, Fold, Expand, Check, CopyDocument, ArrowUp, ArrowDown,
   User, UserFilled, FolderOpened, Star, Link, Document, Calendar,
-  Printer, Ticket, ShoppingCart
+  Printer, Ticket, ShoppingCart, Phone, Message, Briefcase, Location
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -818,29 +922,157 @@ const faqs = [
 
 // 作者信息
 const author = {
-  name: '您的姓名',
-  title: '资深后端架构师 | RAG 技术布道者 | 技术作家',
-  description: '专注于企业级 AI 系统架构与性能优化，擅长在资源受限环境下构建高质量私有化 AI 系统。现任某互联网公司技术专家，拥有 10+ 年分布式系统开发经验。',
-  tags: ['Spring 生态专家', 'AI 工程化', '性能调优', '技术写作'],
+  name: '汪旭',
+  title: '资深全栈开发工程师 | 金融与政务智能系统专家 | AI 工程化实践者',
+  description: '12 年大型系统设计与开发经验，主导多个高并发、高可用微服务系统（日均百万级请求），覆盖金融风控、政务公开、无线运维等领域。专注于企业级 AI 系统架构与性能优化，擅长在资源受限环境下构建高质量私有化 AI 系统。现任中软国际科技服务有限公司研发经理。',
+  tags: ['Spring 生态专家', 'AI 工程化', '性能调优', '全栈开发', '微服务架构', '金融风控'],
   stats: [
-    { value: '10+', label: '年经验' },
-    { value: '50+', label: '技术文章' },
-    { value: '3k+', label: 'GitHub Stars' },
-    { value: '10w+', label: '技术读者' }
+    { value: '12+', label: '年经验' },
+    { value: '10+', label: '大型项目' },
+    { value: '100 万+', label: '日均请求' },
+    { value: '99.9%', label: '系统可用' }
   ],
   links: [
-    { name: 'GitHub', type: 'info', icon: 'Star', url: 'https://github.com/your-username' },
-    { name: '博客', type: 'primary', icon: 'Document', url: 'https://your-blog.com' },
-    { name: '知乎', type: 'warning', icon: 'User', url: 'https://zhihu.com/people/your-id' },
-    { name: '公众号', type: 'success', icon: 'ChatDotRound', url: 'https://mp.weixin.qq.com' }
+    { name: '邮箱', type: 'primary', icon: 'Message', url: 'mailto:m13186109757@163.com' },
+    { name: '电话', type: 'success', icon: 'Phone', url: 'tel:13186109757' },
+    { name: '所在地', type: 'info', icon: 'Location', url: '#' }
   ]
 }
 
-// 联系方式
+// 个人优势 - 根据简历更新
+const advantages = [
+  '12 年大型系统设计与开发经验，主导多个高并发、高可用微服务系统（日均百万级请求），覆盖金融风控、政务公开、无线运维等领域',
+  '全栈技术能力突出：后端精通 Java（Spring Boot/Cloud）、Python；前端熟练 Vue3/Svelte；熟悉 Docker/K8s/Nginx 运维体系',
+  '深度掌握数据架构：MySQL/PostgreSQL/Oracle + Redis/HBase + Neo4j，具备海量数据处理与性能调优实战经验',
+  '积极探索 AI 工程落地：熟悉大模型（LLM）应用开发，掌握 RAG、Embedding、Function Calling 等技术，能基于 Spring AI 构建智能问答、工单分类、知识库等 AI 增强型系统',
+  '具备端到端交付能力：从需求分析、产品设计、工作量评估到前后端开发、部署运维，可独立推动项目高质量落地'
+]
+
+// 项目经历 - 根据简历更新
+const projects = [
+  {
+    name: '智能政务知识助手（个人项目）',
+    time: '2025.12 - 至今',
+    company: '个人开源项目',
+    technologies: ['Spring Boot', 'Spring AI', 'Milvus', 'Vue3', 'Ollama', 'RAG'],
+    achievements: [
+      '基于 Spring Boot + Spring AI + Milvus + Vue3 构建政务政策问答系统',
+      '实现 PDF/Word 文档自动解析 → 向量化存储 → RAG 问答 → 流式响应',
+      '使用 Qwen-7B 本地模型（Ollama）+ bge-small-zh Embedding',
+      '支持多轮对话、引用溯源，响应延迟 2s',
+      'GitHub 开源，提供 Docker 一键部署脚本'
+    ]
+  },
+  {
+    name: 'WMG 无线网络维护卫士平台',
+    time: '2018.10 - 至今',
+    company: '中软国际科技服务有限公司 · 研发经理',
+    technologies: ['Spring Boot', 'Spring Cloud', 'Vue3', 'Docker', 'K8s', 'Nginx'],
+    achievements: [
+      '设计并实施统一故障树、事故树、变更评审与网络巡检四大模块',
+      '推动前端框架由 JSP+iframe 向 Vue+ 乾坤微前端架构转型，页面加载速度提升 40%',
+      '引入 Docker+Kubernetes 实现服务自动化部署，发布效率提升 60%',
+      '重构反向频谱工具算法，频谱分析处理性能提升 50%',
+      '支持并发用户量提升 50%，系统响应时间缩短 30%'
+    ]
+  },
+  {
+    name: '慧健风控系统',
+    time: '2016.09 - 2018.03',
+    company: '深圳前海联金所金融信息服务有限公司 · 全栈工程师',
+    technologies: ['Spring', 'MyBatis', 'Redis', 'HBase', 'Drools'],
+    achievements: [
+      '构建自动化审批流程与多维度风险控制机制',
+      '设计风控规则引擎与评分模型，自动审批通过率提升至 20%',
+      '引入 HBase 实现海量历史数据高效存储，审批处理效率提升 50%',
+      '系统支持每秒处理 10 万 + 次请求，坏账率下降 30%',
+      '人工审核平均耗时由 3 天缩短至 1 小时'
+    ]
+  },
+  {
+    name: '渭南市华州区政务公开平台',
+    time: '2018.03 - 2018.08',
+    company: '西安鼎蓝通信科技有限公司 · 全栈工程师',
+    technologies: ['Spring Boot', 'JPA', 'Shiro', 'Vue', 'Bootstrap'],
+    achievements: [
+      '设计并实施基于 SpringBoot、JPA 与 Shiro 的高可用系统架构',
+      '支持日均访问量超过 10 万次，系统响应速度提升 30%',
+      '独立开发文件上传、审批、发布及管理等核心功能模块',
+      '统筹跨部门需求沟通与协作，确保系统按时交付上线'
+    ]
+  },
+  {
+    name: '赫美钱包消费信贷系统',
+    time: '2017.04 - 2017.06',
+    company: '深圳前海联金所金融信息服务有限公司 · 全栈工程师',
+    technologies: ['Spring', 'SpringMVC', 'MyBatis', 'Dubbo', 'Redis'],
+    achievements: [
+      '主导系统架构设计与核心模块开发，实现用户提前消费与分期支付功能',
+      '设计并实施基于 Dubbo 的微服务架构，接口平均响应时间降低 30%',
+      '引入 Redis 作为分布式缓存，数据读取性能提升 50%',
+      '搭建 Jenkins 持续集成与自动化部署流水线，发布频率从每周一次提升至每日多次'
+    ]
+  },
+  {
+    name: '固网解决方案系统',
+    time: '2014.06 - 2016.03',
+    company: '华为 · 全栈工程师',
+    technologies: ['Spring', 'Hibernate', 'Extjs', 'Echart', 'MySQL'],
+    achievements: [
+      '主导系统整体架构设计，打造集资源共享、问题答疑与知识共享于一体的协同平台',
+      '基于 Extjs 与 Echart 构建前端交互界面，实现数据可视化与高效资源检索',
+      '通过索引优化与查询性能调优，将关键接口响应时间缩短 30%',
+      '系统成功上线后稳定支持超过 500 名员工日常使用，资源分享量同比增长 50%'
+    ]
+  }
+]
+
+// 专业技能 - 根据简历更新
+const skills = [
+  {
+    name: 'Java 生态',
+    icon: '☕',
+    level: '精通',
+    items: ['Spring Boot', 'Spring Cloud', 'Spring AI', 'MyBatis', 'Dubbo', 'Maven']
+  },
+  {
+    name: '前端技术',
+    icon: '🎨',
+    level: '精通',
+    items: ['Vue3', 'Svelte', 'React', 'TypeScript', 'Element Plus', '微前端']
+  },
+  {
+    name: '数据库/中间件',
+    icon: '🗄️',
+    level: '精通',
+    items: ['MySQL', 'PostgreSQL', 'Oracle', 'Redis', 'HBase', 'Neo4j', 'Milvus']
+  },
+  {
+    name: 'AI 智能系统',
+    icon: '🤖',
+    level: '熟练',
+    items: ['RAG', 'Embedding', 'Function Calling', 'LangChain', 'Ollama', 'LLM 应用']
+  },
+  {
+    name: '运维体系',
+    icon: '⚙️',
+    level: '熟练',
+    items: ['Docker', 'Kubernetes', 'Nginx', 'Jenkins', 'Apollo', 'Linux']
+  },
+  {
+    name: '其他语言',
+    icon: '📝',
+    level: '熟练',
+    items: ['Python', 'JavaScript', 'Shell', 'SQL', 'HTML5', 'CSS3']
+  }
+]
+
+// 联系方式 - 根据简历更新
 const contacts = [
-  { name: '邮箱', value: 'your-email@example.com', icon: 'Message' },
-  { name: '微信', value: 'your-wechat-id', icon: 'ChatDotRound' },
-  { name: 'GitHub', value: '@your-username', icon: 'Star' }
+  { name: '手机', value: '131-8610-9757', icon: 'Phone' },
+  { name: '邮箱', value: 'm13186109757@163.com', icon: 'Message' },
+  { name: '所在地', value: '陕西 · 西安', icon: 'Location' },
+  { name: '工作年限', value: '12 年', icon: 'Briefcase' }
 ]
 
 // 方法
@@ -885,6 +1117,7 @@ const scrollToTop = () => {
 }
 
 const openLink = (url: string) => {
+  if (url === '#') return
   window.open(url, '_blank')
 }
 
@@ -1516,6 +1749,7 @@ onUnmounted(() => {
 .metric-name {
   font-weight: 600;
   color: var(--text-primary);
+  display: flex;
   align-items: center;
   gap: 10px;
 }
@@ -2342,6 +2576,7 @@ onUnmounted(() => {
   justify-content: center;
   color: white;
   font-size: 4.5rem;
+  font-weight: 700;
   box-shadow:
     0 10px 40px rgba(102, 126, 234, 0.4),
     inset 0 2px 0 rgba(255, 255, 255, 0.2);
@@ -2442,6 +2677,347 @@ onUnmounted(() => {
 
 .author-link-btn:hover {
   transform: translateY(-2px);
+}
+
+/* ==================== 个人优势 ==================== */
+.advantage-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.advantage-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--gradient-success);
+}
+
+.advantage-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.advantage-item {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  animation: fadeInRight 0.5s ease forwards;
+  opacity: 0;
+}
+
+.advantage-item:hover {
+  border-color: rgba(103, 194, 58, 0.3);
+  box-shadow: 0 4px 15px rgba(103, 194, 58, 0.1);
+  transform: translateX(4px);
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.advantage-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gradient-success);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.advantage-content p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+/* ==================== 项目经历 ==================== */
+.project-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.project-timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+.project-timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--primary-color) 0%, transparent 100%);
+}
+
+.project-item {
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 30px;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.project-item:last-child {
+  margin-bottom: 0;
+}
+
+.project-time {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.project-dot {
+  position: absolute;
+  left: 24px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.2);
+}
+
+.project-content {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.project-content:hover {
+  border-color: rgba(64, 158, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.project-content h4 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.project-company {
+  margin: 0 0 12px 0;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.project-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.project-tech-tag {
+  font-weight: 500;
+}
+
+.project-achievements {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.project-achievements li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.achievement-icon {
+  color: var(--success-color);
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ==================== 专业技能 ==================== */
+.skills-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.skills-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--gradient-accent);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.skill-category {
+  padding: 22px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.skill-category:hover {
+  border-color: rgba(64, 158, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.1);
+  transform: translateY(-3px);
+}
+
+.skill-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.skill-icon {
+  font-size: 1.8rem;
+}
+
+.skill-header h4 {
+  flex: 1;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.skill-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-item {
+  padding: 6px 14px;
+  background: var(--bg-primary);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.skill-item:hover {
+  background: rgba(64, 158, 255, 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* ==================== 教育背景 ==================== */
+.education-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.education-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.education-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+}
+
+.education-school {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.school-icon {
+  font-size: 2rem;
+}
+
+.school-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.education-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.education-info span {
+  padding: 6px 14px;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.education-major {
+  font-weight: 500;
+}
+
+.education-degree {
+  background: rgba(64, 158, 255, 0.1) !important;
+  color: var(--primary-color) !important;
+  border-color: rgba(64, 158, 255, 0.3) !important;
+}
+
+.education-time {
+  color: var(--text-muted);
 }
 
 /* ==================== 联系区域 ==================== */
@@ -2722,6 +3298,39 @@ onUnmounted(() => {
   .contact-item {
     width: 100%;
     max-width: 300px;
+    justify-content: center;
+  }
+
+  .project-item {
+    padding-left: 70px;
+  }
+
+  .project-time {
+    width: 50px;
+    font-size: 0.8rem;
+  }
+
+  .project-dot {
+    left: 18px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .project-timeline::before {
+    left: 24px;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .education-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .education-info {
+    flex-wrap: wrap;
     justify-content: center;
   }
 }

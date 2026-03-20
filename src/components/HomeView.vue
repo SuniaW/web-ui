@@ -728,7 +728,7 @@ const handleTopicClick = (topic: any) => {
 }
 
 const openGithubHandbook = () => {
-  window.open('https://github.com/your-username/lite-rag-handbook', '_blank')
+  window.open('https://github.com/SuniaW/study-notes', '_blank')
 }
 
 const downloadPDF = () => {
@@ -901,21 +901,21 @@ const repositories = [
     description: 'Lite-RAG 核心后端代码，Spring Boot + Spring AI 实现',
     stars: '1.2k',
     language: 'Java',
-    url: 'https://github.com/your-username/lite-rag'
+    url: 'https://github.com/SuniaW/lite-rag'
   },
   {
     name: 'lite-rag-web',
     description: 'Vue 3 前端界面，Element Plus 组件库',
     stars: '450',
     language: 'TypeScript',
-    url: 'https://github.com/your-username/lite-rag-web'
+    url: 'https://github.com/SuniaW/lite-rag-web'
   },
   {
     name: 'rag-deploy-scripts',
     description: '一键部署脚本与 Docker 配置',
     stars: '320',
     language: 'Shell',
-    url: 'https://github.com/your-username/rag-deploy-scripts'
+    url: 'https://github.com/SuniaW/rag-deploy-scripts'
   }
 ]
 

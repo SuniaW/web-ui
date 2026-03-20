@@ -315,145 +315,109 @@
                 </div>
               </el-card>
             </el-col>
-
-            <el-col :xs="24" :md="12">
-              <el-card header="📝 技术博客 & 文章" class="info-card glass-effect blog-card">
-                <div class="blog-list">
-                  <div class="blog-item" v-for="(blog, index) in blogs" :key="blog.title" :style="{ animationDelay: `${index * 0.08}s` }">
-                    <div class="blog-icon">
-                      <el-icon><Document /></el-icon>
-                    </div>
-                    <div class="blog-info">
-                      <h4>{{ blog.title }}</h4>
-                      <p>{{ blog.summary }}</p>
-                      <div class="blog-meta">
-                        <span class="blog-date">{{ blog.date }}</span>
-                        <el-tag size="small" :type="blog.tagType">{{ blog.category }}</el-tag>
-                      </div>
-                    </div>
-                    <el-button type="primary" text @click="openLink(blog.url)" class="blog-btn">
-                      <el-icon><Link /></el-icon>
-                      阅读
-                    </el-button>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
-
-          <!-- 书籍出版 -->
-          <el-row :gutter="20" style="margin-top: 20px;">
-            <el-col :xs="24" :md="24">
-              <el-card header="📚 技术著作" class="info-card glass-effect book-card">
-                <div class="book-showcase">
-                  <div class="book-cover" v-for="book in books" :key="book.title">
-                    <div class="book-image">
-                      <div class="book-placeholder">
-                        <span class="book-icon">📖</span>
-                        <span class="book-title">{{ book.title }}</span>
-                      </div>
-                      <div class="book-shadow"></div>
-                    </div>
-                    <div class="book-info">
-                      <h3>{{ book.title }}</h3>
-                      <p class="book-subtitle">{{ book.subtitle }}</p>
-                      <p class="book-desc">{{ book.description }}</p>
-                      <div class="book-meta">
-                        <span><el-icon><Calendar /></el-icon> {{ book.publishDate }}</span>
-                        <span><el-icon><Printer /></el-icon> {{ book.publisher }}</span>
-                        <span><el-icon><Ticket /></el-icon> ISBN: {{ book.isbn }}</span>
-                      </div>
-                      <div class="book-actions">
-                        <el-button type="primary" @click="openLink(book.purchaseUrl)" class="glow-btn">
-                          <el-icon><ShoppingCart /></el-icon>
-                          购买
-                        </el-button>
-                        <el-button @click="openLink(book.sampleUrl)">
-                          <el-icon><Document /></el-icon>
-                          试读
-                        </el-button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
-
-          <!-- 快速部署指南 -->
-          <el-row :gutter="20" style="margin-top: 20px;">
-            <el-col :xs="24" :md="24">
-              <el-card header="📦 快速部署（4 步启动）" class="info-card glass-effect">
-                <div class="deploy-steps">
-                  <div
-                    v-for="(step, index) in deploySteps"
-                    :key="index"
-                    class="step-item"
-                    :style="{ animationDelay: `${index * 0.1}s` }"
-                  >
-                    <div class="step-number">{{ index + 1 }}</div>
-                    <div class="step-content">
-                      <h4>{{ step.title }}</h4>
-                      <p>{{ step.desc }}</p>
-                      <div class="step-code">
-                        <code>{{ step.code }}</code>
-                        <el-button
-                          size="small"
-                          text
-                          @click="copyCode(step.code)"
-                          class="copy-btn"
-                        >
-                          <el-icon><CopyDocument /></el-icon>
-                        </el-button>
-                      </div>
-                    </div>
-                    <div class="step-connector" v-if="index < deploySteps.length - 1">
-                      <el-icon><ArrowDown /></el-icon>
-                    </div>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
-
-          <!-- 常见问题 -->
-          <el-row :gutter="20" style="margin-top: 20px;">
-            <el-col :xs="24" :md="24">
-              <el-card header="🐛 常见问题排查" class="info-card glass-effect">
-                <div class="faq-grid">
-                  <div
-                    v-for="(faq, index) in faqs"
-                    :key="index"
-                    class="faq-item"
-                    @click="toggleFaq(index)"
-                    :class="{ 'expanded': expandedFaq === index }"
-                  >
-                    <div class="faq-question">
-                      <span class="faq-number">{{ index + 1 }}</span>
-                      <span>{{ faq.question }}</span>
-                      <el-icon class="faq-icon">
-                        <component :is="expandedFaq === index ? 'ArrowUp' : 'ArrowDown'" />
-                      </el-icon>
-                    </div>
-                    <transition name="expand">
-                      <div v-show="expandedFaq === index" class="faq-answer">
-                        <div class="answer-block">
-                          <span class="answer-label cause">原因：</span>
-                          <p>{{ faq.cause }}</p>
-                        </div>
-                        <div class="answer-block">
-                          <span class="answer-label solution">解决方案：</span>
-                          <p>{{ faq.solution }}</p>
-                        </div>
-                      </div>
-                    </transition>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
           </el-row>
         </div>
       </transition>
+
+      <!-- ==================== 新增：全栈学习手册专区 ==================== -->
+      <section class="handbook-section" id="handbook-section">
+        <el-card class="handbook-card glass-effect">
+          <template #header>
+            <div class="card-header">
+              <div class="header-left">
+                <span class="header-icon">📚</span>
+                <span>Spring AI + 大模型全栈实战指南</span>
+              </div>
+              <el-tag type="danger" size="small" effect="dark">完整学习路径</el-tag>
+            </div>
+          </template>
+
+          <div class="handbook-intro">
+            <p class="intro-text">
+              本系统是我在学习 <strong>Spring AI + 大模型</strong> 过程中的全栈实践成果。
+              以下是完整的 9 大专题学习手册，涵盖从架构设计到生产部署的全部知识。
+            </p>
+            <div class="handbook-stats">
+              <div class="handbook-stat-item">
+                <div class="stat-num">9</div>
+                <div class="stat-label">核心专题</div>
+              </div>
+              <div class="handbook-stat-item">
+                <div class="stat-num">50+</div>
+                <div class="stat-label">技术要点</div>
+              </div>
+              <div class="handbook-stat-item">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">开源代码</div>
+              </div>
+              <div class="handbook-stat-item">
+                <div class="stat-num">生产级</div>
+                <div class="stat-label">部署方案</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9 大专题网格 -->
+          <el-row :gutter="20" class="topic-grid">
+            <el-col
+              v-for="(topic, index) in handbookTopics"
+              :key="index"
+              :xs="24"
+              :sm="12"
+              :md="8"
+              class="topic-col"
+            >
+              <el-card
+                shadow="hover"
+                class="topic-card"
+                @click="handleTopicClick(topic)"
+              >
+                <div class="topic-card-header">
+                  <span class="topic-num">{{ String(index + 1).padStart(2, '0') }}</span>
+                  <el-tag :type="getTopicLevelType(topic.level)" size="small">{{ topic.level }}</el-tag>
+                </div>
+                <h3 class="topic-title">{{ topic.title }}</h3>
+                <p class="topic-desc">{{ topic.desc }}</p>
+                <div class="topic-tags">
+            <span v-for="tag in topic.tags" :key="tag" class="mini-topic-tag">
+              <el-icon><Ticket /></el-icon> {{ tag }}
+            </span>
+                </div>
+                <div class="topic-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" :style="{ width: topic.progress }"></div>
+                  </div>
+                  <span class="progress-text">{{ topic.progress }}</span>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+
+          <!-- 手册特色 -->
+          <el-row :gutter="20" style="margin-top: 30px;">
+            <el-col :xs="24" :md="8" v-for="(feature, index) in handbookFeatures" :key="index">
+              <div class="handbook-feature-item">
+                <div class="feature-icon-wrapper" :style="{ background: feature.color }">
+                  <el-icon :size="28" color="#fff"><component :is="feature.icon" /></el-icon>
+                </div>
+                <h4>{{ feature.title }}</h4>
+                <p>{{ feature.desc }}</p>
+              </div>
+            </el-col>
+          </el-row>
+
+          <!-- 行动按钮 -->
+          <div class="handbook-actions">
+            <el-button type="primary" size="large" round @click="openGithubHandbook" class="glow-btn">
+              <el-icon><FolderOpened /></el-icon> GitHub 查看全部文档
+            </el-button>
+            <el-button size="large" round plain @click="downloadPDF">
+              <el-icon><Download /></el-icon> 下载 PDF 版本
+            </el-button>
+          </div>
+        </el-card>
+      </section>
+      <!-- ==================== 学习手册专区结束 ==================== -->
 
       <!-- 作者推广区 -->
       <section id="author-section" class="author-section">
@@ -648,15 +612,134 @@ import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  ChatDotRound, Fold, Expand, Check, CopyDocument, ArrowUp, ArrowDown,
-  User, UserFilled, FolderOpened, Star, Link, Document, Calendar,
-  Printer, Ticket, ShoppingCart, Phone, Message, Briefcase, Location
+  ChatDotRound, Download, Check, CopyDocument, ArrowUp, ArrowDown,
+  User, Monitor, FolderOpened, Star, Link, Document, Calendar,
+  Printer, Ticket, ShoppingCart, Reading
 } from '@element-plus/icons-vue'
+
 
 const router = useRouter()
 const showDetails = ref(false)
 const expandedFaq = ref<number | null>(null)
 const showBackToTop = ref(false)
+
+
+// ==================== 学习手册数据 ====================
+const handbookTopics = [
+  {
+    title: 'Spring AI 快速入门',
+    level: '基础',
+    desc: '掌握 Spring AI 核心概念与编程模型',
+    tags: ['架构解析', 'Prompt 模板', 'Model 调用'],
+    progress: '100%'
+  },
+  {
+    title: 'RAG 架构设计',
+    level: '进阶',
+    desc: '理解检索增强生成的核心流程与选型',
+    tags: ['数据流转', '技术选型', '切片策略'],
+    progress: '100%'
+  },
+  {
+    title: '向量数据库实战',
+    level: '核心',
+    desc: 'Milvus 深度集成与 Embedding 应用',
+    tags: ['Milvus 部署', '向量检索', '混合搜索'],
+    progress: '100%'
+  },
+  {
+    title: '大模型集成',
+    level: '核心',
+    desc: 'Ollama 本地部署与 Prompt 工程优化',
+    tags: ['本地模型', 'Prompt 技巧', '流式输出'],
+    progress: '100%'
+  },
+  {
+    title: 'Vue3 前端开发',
+    level: '全栈',
+    desc: '构建现代化的 AI 对话交互界面',
+    tags: ['组件封装', '状态管理', '打字机效果'],
+    progress: '100%'
+  },
+  {
+    title: '系统性能调优',
+    level: '高级',
+    desc: '全链路瓶颈分析与极致优化方案',
+    tags: ['多级缓存', '异步编排', '索引调优'],
+    progress: '100%'
+  },
+  {
+    title: '安全与权限',
+    level: '生产',
+    desc: '企业级数据保护与 RBAC 权限控制',
+    tags: ['文档级权限', '数据脱敏', '审计日志'],
+    progress: '100%'
+  },
+  {
+    title: '运维监控体系',
+    level: '生产',
+    desc: 'Prometheus + Grafana 全方位监控',
+    tags: ['指标采集', '告警规则', '日志聚合'],
+    progress: '100%'
+  },
+  {
+    title: '故障排查与灾备',
+    level: '专家',
+    desc: '生产环境故障诊断与高可用方案',
+    tags: ['诊断脚本', '备份恢复', 'HA 部署'],
+    progress: '100%'
+  }
+]
+
+const handbookFeatures = [
+  {
+    title: '完整源码',
+    desc: '所有示例代码均可直接运行，包含详细注释',
+    icon: Monitor,
+    color: 'linear-gradient(135deg, #409EFF 0%, #337ecc 100%)'
+  },
+  {
+    title: '生产部署',
+    desc: 'Docker Compose 一键部署，包含完整运维脚本',
+    icon: Monitor,
+    color: 'linear-gradient(135deg, #67C23A 0%, #529b2e 100%)'
+  },
+  {
+    title: '持续更新',
+    desc: '跟随技术迭代持续更新，保持内容前沿性',
+    icon: Reading,
+    color: 'linear-gradient(135deg, #E6A23C 0%, #b88230 100%)'
+  }
+]
+
+// ==================== 学习手册相关函数 ====================
+const handleTopicClick = (topic: any) => {
+  ElMessage.info(`《${topic.title}》- 详细教程正在整理中，敬请期待！`)
+  // 或者跳转到具体博文页面
+  // window.open(`/blog/${topic.id}`, '_blank')
+}
+
+const openGithubHandbook = () => {
+  window.open('https://github.com/your-username/lite-rag-handbook', '_blank')
+}
+
+const downloadPDF = () => {
+  ElMessage.success('PDF 版本下载功能开发中...')
+  // 实际实现：window.open('/handbook.pdf', '_blank')
+}
+
+const getTopicLevelType = (level: string) => {
+  const map: Record<string, any> = {
+    '基础': 'info',
+    '进阶': 'primary',
+    '核心': 'warning',
+    '高级': 'danger',
+    '生产': 'success',
+    '专家': 'danger',
+    '全栈': 'primary'
+  }
+  return map[level] || 'info'
+}
 
 // 徽章数据
 const badges = [
@@ -814,111 +897,6 @@ const repositories = [
   }
 ]
 
-// 技术博客
-const blogs = [
-  {
-    title: '2 核 4G 服务器运行 RAG 的完整调优实践',
-    summary: '从频发崩溃到 7×24 小时稳定运行的完整记录',
-    date: '2026-03-15',
-    category: '性能调优',
-    tagType: 'danger',
-    url: 'https://your-blog.com/rag-optimization'
-  },
-  {
-    title: 'Spring AI M6 版本踩坑指南',
-    summary: 'VectorStore 自动配置失效的解决方案',
-    date: '2026-03-10',
-    category: '框架实践',
-    tagType: 'warning',
-    url: 'https://your-blog.com/spring-ai-m6'
-  },
-  {
-    title: 'Milvus 2.6 Standalone 模式内存优化',
-    summary: 'Docker 资源限制与内部缓存调优',
-    date: '2026-03-05',
-    category: '向量数据库',
-    tagType: 'primary',
-    url: 'https://your-blog.com/milvus-optimization'
-  },
-  {
-    title: 'Ollama 低配服务器部署最佳实践',
-    summary: '线程控制、模型预热与内存管理',
-    date: '2026-02-28',
-    category: '模型推理',
-    tagType: 'success',
-    url: 'https://your-blog.com/ollama-deployment'
-  },
-  {
-    title: 'SSE 流式响应断包问题完整解决方案',
-    summary: '前端 Buffer 机制与不完整数据处理',
-    date: '2026-02-20',
-    category: '前端工程',
-    tagType: 'info',
-    url: 'https://your-blog.com/sse-streaming'
-  }
-]
-
-// 书籍
-const books = [
-  {
-    title: '《企业级 RAG 系统实战：从 0 到 1 构建私有化知识库》',
-    subtitle: '低配服务器也能运行的高质量 AI 系统',
-    description: '本书完整记录了从"频发崩溃"到"生产就绪"的 RAG 系统调优全过程。涵盖 Spring AI、Milvus、Ollama 等核心技术的深度优化实践，适合希望在资源受限环境下部署企业级 AI 系统的开发者。',
-    publishDate: '2026 年 1 月',
-    publisher: '电子工业出版社',
-    isbn: '978-7-121-XXXXX-X',
-    purchaseUrl: 'https://item.jd.com/xxxxx.html',
-    sampleUrl: 'https://your-blog.com/book-sample'
-  }
-]
-
-// 部署步骤
-const deploySteps = [
-  {
-    title: '系统优化',
-    desc: '卸载冗余监控，配置 Swap 和内核参数',
-    code: 'wget http://update.aegis.aliyun.com/download/uninstall.sh && ./uninstall.sh'
-  },
-  {
-    title: '部署 Milvus',
-    desc: '使用优化的 docker-compose 启动向量库',
-    code: 'cd /usr/milvus && docker compose up -d'
-  },
-  {
-    title: '配置模型',
-    desc: '拉取 Qwen 和 BGE 模型，限制线程数',
-    code: 'ollama pull qwen2.5:1.5b && ollama pull bge-m3'
-  },
-  {
-    title: '启动应用',
-    desc: '限制 JVM 内存，上传 JAR 运行',
-    code: 'java -Xms512m -Xmx768m -jar rag-system.jar'
-  }
-]
-
-// 常见问题
-const faqs = [
-  {
-    question: 'Connection Refused 19530',
-    cause: 'Milvus 未启动或端口被拦截',
-    solution: '检查 docker compose ps，确认安全组开放 19530 端口'
-  },
-  {
-    question: 'collection not found',
-    cause: 'Spring AI M6 版本自动配置失效',
-    solution: '使用 Java 配置类强制注入，手动在 Attu 中建表'
-  },
-  {
-    question: 'OOM 内存溢出',
-    cause: '组件内存无限制导致资源争抢',
-    solution: '设置 Docker 内存限制 + JVM -Xmx 参数'
-  },
-  {
-    question: 'SSE 断包乱码',
-    cause: '前端未处理不完整的数据包',
-    solution: '引入 Buffer 机制，保留不完整行到下一包处理'
-  }
-]
 
 // 作者信息
 const author = {
@@ -2202,323 +2180,6 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-/* ==================== 书籍展示 ==================== */
-.book-showcase {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 8px 0;
-}
-
-.book-cover {
-  display: flex;
-  gap: 28px;
-  padding: 24px;
-  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
-  border-radius: 20px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.book-cover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.book-image {
-  flex-shrink: 0;
-  position: relative;
-}
-
-.book-placeholder {
-  width: 170px;
-  height: 230px;
-  background: var(--gradient-primary);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow:
-    0 10px 30px rgba(102, 126, 234, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  position: relative;
-  z-index: 1;
-}
-
-.book-shadow {
-  position: absolute;
-  bottom: -10px;
-  left: 10%;
-  width: 80%;
-  height: 20px;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.2) 0%, transparent 70%);
-  filter: blur(8px);
-}
-
-.book-icon {
-  font-size: 3.5rem;
-  margin-bottom: 14px;
-}
-
-.book-title {
-  font-size: 0.85rem;
-  text-align: center;
-  padding: 0 16px;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-.book-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.book-info h3 {
-  margin: 0 0 10px 0;
-  color: var(--text-primary);
-  font-size: 1.35rem;
-  font-weight: 700;
-}
-
-.book-subtitle {
-  color: var(--primary-color);
-  font-weight: 500;
-  margin-bottom: 14px;
-  font-size: 1rem;
-}
-
-.book-desc {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.8;
-  margin-bottom: 18px;
-  flex: 1;
-}
-
-.book-meta {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 18px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  flex-wrap: wrap;
-}
-
-.book-meta span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.book-actions {
-  display: flex;
-  gap: 12px;
-}
-
-/* ==================== 部署步骤 ==================== */
-.deploy-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 8px 0;
-}
-
-.step-item {
-  display: flex;
-  gap: 18px;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  animation: fadeInUp 0.5s ease forwards;
-  opacity: 0;
-  position: relative;
-}
-
-.step-item:hover {
-  border-color: rgba(64, 158, 255, 0.3);
-  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.1);
-}
-
-.step-number {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--gradient-accent);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
-}
-
-.step-content {
-  flex: 1;
-}
-
-.step-content h4 {
-  margin: 0 0 8px 0;
-  color: var(--text-primary);
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
-.step-content p {
-  margin: 0 0 12px 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.step-code {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
-  padding: 14px 16px;
-  border-radius: 10px;
-  overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.step-code code {
-  color: #a6e3a1;
-  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
-  font-size: 0.85rem;
-  flex: 1;
-  white-space: nowrap;
-}
-
-.copy-btn {
-  color: #89b4fa;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.copy-btn:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-}
-
-.step-connector {
-  position: absolute;
-  bottom: -24px;
-  left: 20px;
-  color: var(--text-muted);
-  animation: bounce 1s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(5px); }
-}
-
-/* ==================== FAQ ==================== */
-.faq-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 14px;
-  padding: 8px 0;
-}
-
-.faq-item {
-  padding: 18px;
-  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.faq-item:hover {
-  border-color: rgba(64, 158, 255, 0.3);
-  background: var(--bg-primary);
-}
-
-.faq-item.expanded {
-  border-color: var(--primary-color);
-  background: var(--bg-primary);
-  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.1);
-}
-
-.faq-question {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  color: var(--text-primary);
-  gap: 12px;
-}
-
-.faq-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: var(--gradient-accent);
-  color: white;
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.faq-icon {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
-}
-
-.faq-answer {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--border-color);
-}
-
-.answer-block {
-  margin-bottom: 10px;
-}
-
-.answer-block:last-child {
-  margin-bottom: 0;
-}
-
-.answer-label {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-right: 8px;
-}
-
-.answer-label.cause {
-  background: rgba(245, 108, 108, 0.1);
-  color: var(--danger-color);
-}
-
-.answer-label.solution {
-  background: rgba(103, 194, 58, 0.1);
-  color: var(--success-color);
-}
-
-.faq-answer p {
-  display: inline;
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.7;
-}
-
 /* ==================== 作者区域 ==================== */
 .author-section {
   margin-top: 60px;
@@ -3376,6 +3037,272 @@ onUnmounted(() => {
     background: white;
     box-shadow: none;
     border: 1px solid #ddd;
+  }
+}
+
+/* ==================== 学习手册专区 ==================== */
+.handbook-section {
+  margin-top: 60px;
+}
+
+.handbook-card {
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+.handbook-card::before {
+  content: '';
+  display: block;
+  height: 5px;
+  background: linear-gradient(90deg, #409EFF 0%, #67C23A 50%, #E6A23C 100%);
+}
+
+.handbook-intro {
+  text-align: center;
+  padding: 20px 0 30px;
+}
+
+.intro-text {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto 25px;
+}
+
+.handbook-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.handbook-stat-item {
+  text-align: center;
+}
+
+.handbook-stat-item .stat-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.handbook-stat-item .stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.topic-grid {
+  margin-top: 20px;
+}
+
+.topic-col {
+  margin-bottom: 20px;
+}
+
+.topic-card {
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.topic-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 25px rgba(64, 158, 255, 0.15);
+}
+
+.topic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--gradient-accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.topic-card:hover::before {
+  opacity: 1;
+}
+
+.topic-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.topic-num {
+  font-size: 20px;
+  font-weight: 900;
+  color: #f3f4f6;
+  line-height: 1;
+}
+
+.topic-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.topic-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+  min-height: 36px;
+  line-height: 1.6;
+}
+
+.topic-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.mini-topic-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--primary-color);
+  background: rgba(64, 158, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.mini-topic-tag .el-icon {
+  font-size: 10px;
+}
+
+.topic-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-success);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success-color);
+  min-width: 35px;
+}
+
+.handbook-feature-item {
+  text-align: center;
+  padding: 25px 20px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.6) 100%);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.handbook-feature-item:hover {
+  transform: translateY(-5px);
+  border-color: rgba(64, 158, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(64, 158, 255, 0.1);
+}
+
+.feature-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.handbook-feature-item h4 {
+  margin: 0 0 10px 0;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.handbook-feature-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.handbook-actions {
+  text-align: center;
+  padding: 30px 20px 10px;
+  border-top: 1px dashed var(--border-color);
+  margin-top: 20px;
+}
+
+.handbook-actions .el-button {
+  margin: 0 10px;
+  min-width: 200px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .handbook-stats {
+    gap: 20px;
+    padding: 15px;
+  }
+
+  .handbook-stat-item .stat-num {
+    font-size: 1.8rem;
+  }
+
+  .topic-grid {
+    margin-top: 15px;
+  }
+
+  .topic-col {
+    margin-bottom: 15px;
+  }
+
+  .handbook-actions .el-button {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .handbook-feature-item {
+    margin-bottom: 15px;
   }
 }
 </style>

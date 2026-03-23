@@ -86,49 +86,56 @@
       <!-- 隐藏的技术细节区 -->
       <transition name="el-zoom-in-top">
         <div v-if="showDetails" id="tech-section" class="details-section">
-          <!-- 性能对比卡片 -->
-          <el-row :gutter="20">
+          <!-- 软件规格 -->
+          <el-row :gutter="20" style="margin-top: 20px;">
             <el-col :xs="24" :md="24">
-              <el-card header="📊 工业级调优对比" class="info-card glass-effect performance-card">
-                <template #header>
-                  <div class="card-header">
-                    <div class="header-left">
-                      <span class="header-icon">📊</span>
-                      <span>工业级调优对比</span>
+              <el-card header="📋 软件规格清单" class="info-card glass-effect">
+                <el-table
+                  :data="softwareSpecs"
+                  stripe
+                  style="width: 100%"
+                  :default-sort="{prop: 'category', order: 'ascending'}"
+                  class="styled-table"
+                >
+                  <el-table-column prop="category" label="类别" width="120" sortable />
+                  <el-table-column prop="name" label="名称" width="180" />
+                  <el-table-column prop="version" label="版本" width="120" />
+                  <el-table-column prop="purpose" label="用途" />
+                  <el-table-column prop="status" label="状态" width="100">
+                    <template #default="scope">
+                      <el-tag
+                        :type="scope.row.status === '生产级' ? 'success' : 'info'"
+                        size="small"
+                        effect="dark"
+                      >
+                        {{ scope.row.status }}
+                      </el-tag>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-card>
+            </el-col>
+          </el-row>
+
+          <!-- 核心技术详解 -->
+          <el-row :gutter="20" style="margin-top: 20px;">
+            <el-col :xs="24" :md="24">
+              <el-card header="🔬 核心技术详解" class="info-card glass-effect">
+                <div class="tech-details">
+                  <div class="tech-detail-item" v-for="(tech, index) in coreTechnologies" :key="tech.name" :style="{ animationDelay: `${index * 0.1}s` }">
+                    <div class="tech-detail-header">
+                      <span class="tech-icon">{{ tech.icon }}</span>
+                      <h4>{{ tech.name }}</h4>
+                      <el-tag :type="tech.tagType" size="small" effect="dark">{{ tech.level }}</el-tag>
                     </div>
-                    <el-tag type="success" size="small" effect="dark">生产验证</el-tag>
+                    <p class="tech-detail-desc">{{ tech.description }}</p>
+                    <div class="tech-detail-features">
+                      <span v-for="feature in tech.features" :key="feature" class="feature-tag">
+                        <el-icon><Check /></el-icon>
+                        {{ feature }}
+                      </span>
+                    </div>
                   </div>
-                </template>
-                <div class="table-container">
-                  <table class="stat-table">
-                    <thead>
-                    <tr>
-                      <th>指标</th>
-                      <th>默认配置</th>
-                      <th>极致调优</th>
-                      <th>提升</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(item, index) in performanceData" :key="item.metric">
-                      <td class="metric-name">
-                        <span class="row-indicator" :style="{ animationDelay: `${index * 0.1}s` }"></span>
-                        {{ item.metric }}
-                      </td>
-                      <td class="status-bad">
-                        <span class="status-dot bad"></span>
-                        {{ item.before }}
-                      </td>
-                      <td class="status-good">
-                        <span class="status-dot good"></span>
-                        {{ item.after }}
-                      </td>
-                      <td class="improvement">
-                        <span class="improvement-badge">+{{ item.improvement }}</span>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
                 </div>
               </el-card>
             </el-col>
@@ -174,7 +181,6 @@
             </el-card>
             </el-col>
           </el-row>
-
           <!-- 服务器规格 -->
           <el-row :gutter="20" style="margin-top: 20px;">
             <el-col :xs="24" :md="12">
@@ -202,38 +208,53 @@
               </el-card>
             </el-col>
           </el-row>
-
-          <!-- 软件规格 -->
+          <!-- 性能对比卡片 -->
           <el-row :gutter="20" style="margin-top: 20px;">
             <el-col :xs="24" :md="24">
-              <el-card header="📋 软件规格清单" class="info-card glass-effect">
-                <el-table
-                  :data="softwareSpecs"
-                  stripe
-                  style="width: 100%"
-                  :default-sort="{prop: 'category', order: 'ascending'}"
-                  class="styled-table"
-                >
-                  <el-table-column prop="category" label="类别" width="120" sortable />
-                  <el-table-column prop="name" label="名称" width="180" />
-                  <el-table-column prop="version" label="版本" width="120" />
-                  <el-table-column prop="purpose" label="用途" />
-                  <el-table-column prop="status" label="状态" width="100">
-                    <template #default="scope">
-                      <el-tag
-                        :type="scope.row.status === '生产级' ? 'success' : 'info'"
-                        size="small"
-                        effect="dark"
-                      >
-                        {{ scope.row.status }}
-                      </el-tag>
-                    </template>
-                  </el-table-column>
-                </el-table>
+              <el-card header="📊 工业级调优对比" class="info-card glass-effect performance-card">
+                <template #header>
+                  <div class="card-header">
+                    <div class="header-left">
+                      <span class="header-icon">📊</span>
+                      <span>工业级调优对比</span>
+                    </div>
+                    <el-tag type="success" size="small" effect="dark">生产验证</el-tag>
+                  </div>
+                </template>
+                <div class="table-container">
+                  <table class="stat-table">
+                    <thead>
+                    <tr>
+                      <th>指标</th>
+                      <th>默认配置</th>
+                      <th>极致调优</th>
+                      <th>提升</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item, index) in performanceData" :key="item.metric">
+                      <td class="metric-name">
+                        <span class="row-indicator" :style="{ animationDelay: `${index * 0.1}s` }"></span>
+                        {{ item.metric }}
+                      </td>
+                      <td class="status-bad">
+                        <span class="status-dot bad"></span>
+                        {{ item.before }}
+                      </td>
+                      <td class="status-good">
+                        <span class="status-dot good"></span>
+                        {{ item.after }}
+                      </td>
+                      <td class="improvement">
+                        <span class="improvement-badge">+{{ item.improvement }}</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
               </el-card>
             </el-col>
           </el-row>
-
           <!-- 内存分配可视化 -->
           <el-row :gutter="20" style="margin-top: 20px;">
             <el-col :xs="24" :md="24">
@@ -269,31 +290,6 @@
               </el-card>
             </el-col>
           </el-row>
-
-          <!-- 核心技术详解 -->
-          <el-row :gutter="20" style="margin-top: 20px;">
-            <el-col :xs="24" :md="24">
-              <el-card header="🔬 核心技术详解" class="info-card glass-effect">
-                <div class="tech-details">
-                  <div class="tech-detail-item" v-for="(tech, index) in coreTechnologies" :key="tech.name" :style="{ animationDelay: `${index * 0.1}s` }">
-                    <div class="tech-detail-header">
-                      <span class="tech-icon">{{ tech.icon }}</span>
-                      <h4>{{ tech.name }}</h4>
-                      <el-tag :type="tech.tagType" size="small" effect="dark">{{ tech.level }}</el-tag>
-                    </div>
-                    <p class="tech-detail-desc">{{ tech.description }}</p>
-                    <div class="tech-detail-features">
-                      <span v-for="feature in tech.features" :key="feature" class="feature-tag">
-                        <el-icon><Check /></el-icon>
-                        {{ feature }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </el-card>
-            </el-col>
-          </el-row>
-
           <!-- 开源仓库 & 技术博客 -->
           <el-row :gutter="20" style="margin-top: 20px;">
             <el-col :xs="24" :md="24">

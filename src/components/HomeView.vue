@@ -410,9 +410,6 @@
             <el-button type="primary" size="large" round @click="openGithubHandbook" class="glow-btn">
               <el-icon><FolderOpened /></el-icon> GitHub 查看全部文档
             </el-button>
-            <el-button size="large" round plain @click="downloadPDF">
-              <el-icon><Download /></el-icon> 下载 PDF 版本
-            </el-button>
           </div>
         </el-card>
       </section>

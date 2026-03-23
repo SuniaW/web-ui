@@ -454,18 +454,6 @@
                   <div class="stat-label">{{ stat.label }}</div>
                 </div>
               </div>
-              <div class="author-links">
-                <el-button
-                  v-for="link in author.links"
-                  :key="link.name"
-                  :type="link.type"
-                  @click="openLink(link.url)"
-                  class="author-link-btn"
-                >
-                  <el-icon><component :is="link.icon" /></el-icon>
-                  {{ link.name }}
-                </el-button>
-              </div>
             </div>
           </div>
         </el-card>
@@ -553,7 +541,7 @@
         </el-card>
 
         <!-- 教育背景 -->
-        <el-card class="education-card glass-effect" style="margin-top: 30px;">
+<!--        <el-card class="education-card glass-effect" style="margin-top: 30px;">
           <template #header>
             <div class="card-header">
               <div class="header-left">
@@ -573,7 +561,7 @@
               <span class="education-time">2010.09 - 2014.07</span>
             </div>
           </div>
-        </el-card>
+        </el-card>-->
       </section>
 
       <!-- 联系方式 -->
@@ -923,8 +911,11 @@ const repositories = [
 // 作者信息
 const author = {
   name: '汪旭',
-  title: '资深全栈开发工程师 | 金融与政务智能系统专家 | AI 工程化实践者',
-  description: '12 年大型系统设计与开发经验，主导多个高并发、高可用微服务系统（日均百万级请求），覆盖金融风控、政务公开、无线运维等领域。专注于企业级 AI 系统架构与性能优化，擅长在资源受限环境下构建高质量私有化 AI 系统。现任中软国际科技服务有限公司研发经理。',
+  title: '资深全栈开发工程师 | AI 工程化专家 | 企业级系统架构师',
+  description:'12年大型系统架构与全栈开发经验，精通 Java核心生态、Python与Vue3。' +
+    '具备“一人成军”的端到端交付能力：从需求把控、架构设计到前后端开发与K8s自动化运维，支撑百万级日请求。' +
+    '现深耕 AI 工程化（AI Engineering），擅长通过 Java/Python 结合 LLM，为企业构建高可用、低延迟的 RAG 智能问答与 Agent 业务系统。',
+
   tags: ['Spring 生态专家', 'AI 工程化', '性能调优', '全栈开发', '微服务架构', '金融风控'],
   stats: [
     { value: '12+', label: '年经验' },
@@ -945,7 +936,8 @@ const advantages = [
   '全栈技术能力突出：后端精通 Java（Spring Boot/Cloud）、Python；前端熟练 Vue3/Svelte；熟悉 Docker/K8s/Nginx 运维体系',
   '深度掌握数据架构：MySQL/PostgreSQL/Oracle + Redis/HBase + Neo4j，具备海量数据处理与性能调优实战经验',
   '积极探索 AI 工程落地：熟悉大模型（LLM）应用开发，掌握 RAG、Embedding、Function Calling 等技术，能基于 Spring AI 构建智能问答、工单分类、知识库等 AI 增强型系统',
-  '具备端到端交付能力：从需求分析、产品设计、工作量评估到前后端开发、部署运维，可独立推动项目高质量落地'
+  'AI 辅助开发提效： 深度掌握 AI 辅助开发工具（如 Copilot、Code Llama 等），通过 AI 工具链将代码生成效率提升 30%+，实现从需求分析、代码编写到单元测试的全流程智能化提效',
+  '端到端全链路交付：具备从0到1独立交付完整产品的全生命周期能力。精通产品设计、架构分析、前端（Vue）与后端（Java）开发、数据库设计与优化、自动化部署及系统运维维护，真正实现一人覆盖从“想法”到“上线”的所有环节'
 ]
 
 // 项目经历 - 根据简历更新
@@ -1069,8 +1061,7 @@ const skills = [
 
 // 联系方式 - 根据简历更新
 const contacts = [
-  { name: '手机', value: '131-8610-9757', icon: 'Phone' },
-  { name: '邮箱', value: 'm13186109757@163.com', icon: 'Message' },
+  { name: '邮箱', value: '644175013@qq.com', icon: 'Message' },
   { name: '所在地', value: '陕西 · 西安', icon: 'Location' },
   { name: '工作年限', value: '12 年', icon: 'Briefcase' }
 ]
@@ -2360,22 +2351,6 @@ onUnmounted(() => {
   color: var(--text-muted);
   margin-top: 6px;
 }
-
-.author-links {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.author-link-btn {
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.author-link-btn:hover {
-  transform: translateY(-2px);
-}
-
 /* ==================== 个人优势 ==================== */
 .advantage-card {
   border-radius: 20px;

@@ -768,7 +768,7 @@ const allTechs = [
 ]
 
 
-const getTechType = (tech) => {
+const getTechType = (tech: string) => {
   if (tech.includes('Spring')) return ''
   if (tech.includes('Milvus') || tech.includes('Ollama') || tech.includes('Qwen') || tech.includes('BGE')) return 'warning'
   return 'success'

@@ -1,5 +1,5 @@
 <template>
-  <div class="home-container">
+  <div class="home-container" ref="homeContainer" >
     <!-- 顶部导航提示 -->
     <div class="top-banner">
       <div class="banner-content">
@@ -604,7 +604,7 @@
     <!-- 回到顶部按钮 -->
     <transition name="fade">
       <el-button
-        v-show="showBackToTop"
+        v-if="showBackToTop"
         circle
         class="back-to-top glow-btn"
         @click="scrollToTop"
@@ -622,9 +622,32 @@ import {nextTick, onMounted, onUnmounted} from 'vue'
 import {  ChatDotRound, Check, ArrowUp, User, FolderOpened, Link, Ticket} from '@element-plus/icons-vue'
 import {Tools, CircleCheckFilled} from '@element-plus/icons-vue'
 import {
-  advantages, allTechs, author, badges, contacts, coreMetrics, coreTechnologies,  getTechType, getTopicLevelType, handbookFeatures,
-  handbookTopics, handleTopicClick, memoryAllocation,  openGithubHandbook, optimizationTips, performanceData, projects,
-  repositories,  router, serverSpecs, serviceSpecs,  showBackToTop,  showDetails, skills, softwareSpecs
+  advantages,
+  allTechs,
+  author,
+  badges,
+  contacts,
+  coreMetrics,
+  coreTechnologies,
+  getTechType,
+  getTopicLevelType,
+  handbookFeatures,
+  handbookTopics,
+  handleTopicClick,
+  homeContainer,
+  memoryAllocation,
+  openGithubHandbook,
+  optimizationTips,
+  performanceData,
+  projects,
+  repositories,
+  router,
+  serverSpecs,
+  serviceSpecs,
+  showBackToTop,
+  showDetails,
+  skills,
+  softwareSpecs
 } from "@/assets/ts/constants.ts";
 
 
@@ -636,7 +659,7 @@ const handleToggleDetails = () => {
     nextTick(() => {
       const el = document.getElementById('tech-section')
       if (el) {
-        el.scrollIntoView({behavior: 'smooth', block: 'start'})
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     })
   }
@@ -649,32 +672,36 @@ const goToChat = () => {
 const scrollToSection = (id: string) => {
   const el = document.getElementById(id)
   if (el) {
-    el.scrollIntoView({behavior: 'smooth', block: 'start'})
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
 
-
 const scrollToTop = () => {
-  window.scrollTo({top: 0, behavior: 'smooth'})
+  // 💡 修复：如果 home-container 负责滚动
+  if (homeContainer.value) {
+    homeContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 }
 
-const openLink = (url: string) => {
-  if (url === '#') return
-  window.open(url, '_blank')
-}
-
-// 监听滚动
+// 💡 修复：监听 home-container 容器的滚动而不是 window
 const handleScroll = () => {
-  showBackToTop.value = window.scrollY > 300
+  if (homeContainer.value) {
+    showBackToTop.value = homeContainer.value.scrollTop > 300
+  }
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  if (homeContainer.value) {
+    homeContainer.value.addEventListener('scroll', handleScroll, { passive: true })
+  }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  if (homeContainer.value) {
+    homeContainer.value.removeEventListener('scroll', handleScroll)
+  }
 })
 </script>
 
 <style src="../assets/styles/home.css" scoped></style>
+

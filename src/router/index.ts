@@ -6,26 +6,26 @@ const router = createRouter({
     {
       path: '/',
       component: () => {
-        return import('../components/HomeView.vue')
+        return import('../views/HomeView.vue')
       },
     },
     {
       path: '/chat/code',
       component: () => {
-        return import('../components/ChatBox.vue')
+        return import('../views/AiChatBox.vue')
       },
     },
     {
       path: '/chat/rag',
       component: () => {
-        return import('../components/RagChatBox.vue')
+        return import('../views/RagChatBox.vue')
       },
       props: true,
     },
     {
       path: `/chat/topic/:id`,
       component: () => {
-        return import('../components/ManualMd.vue')
+        return import('../views/ManualMd.vue')
       },
       props: true,
     },

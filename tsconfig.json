@@ -10,6 +10,9 @@
     {
       "path": "./tsconfig.vitest.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "types": ["node", "vite/client"] // 💡 确保包含了 vite/client
+  }
 }
 

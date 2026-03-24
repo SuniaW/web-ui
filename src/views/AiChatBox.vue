@@ -95,7 +95,7 @@ const startStream = async () => {
   timerId = setInterval(() => timer.value++, 1000)
 
   try {
-    const response = await fetch(`/ai/weather/stream?city=${encodeURIComponent(city.value)}`)
+    const response = await fetch(`/api/weather/stream?city=${encodeURIComponent(city.value)}`)
 
     if (!response.body) throw new Error('ReadableStream not supported')
 

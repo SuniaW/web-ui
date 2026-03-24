@@ -573,29 +573,6 @@
             </div>
           </div>
         </el-card>
-
-        <!-- 教育背景 -->
-        <!--        <el-card class="education-card glass-effect" style="margin-top: 30px;">
-                  <template #header>
-                    <div class="card-header">
-                      <div class="header-left">
-                        <span class="header-icon">🎓</span>
-                        <span>教育背景</span>
-                      </div>
-                    </div>
-                  </template>
-                  <div class="education-item">
-                    <div class="education-school">
-                      <span class="school-icon">🏫</span>
-                      <span class="school-name">哈尔滨师范大学</span>
-                    </div>
-                    <div class="education-info">
-                      <span class="education-major">数字媒体技术.游戏软件开发</span>
-                      <span class="education-degree">本科</span>
-                      <span class="education-time">2010.09 - 2014.07</span>
-                    </div>
-                  </div>
-                </el-card>-->
       </section>
 
       <!-- 联系方式 -->
@@ -642,20 +619,12 @@
 
 <script setup lang="ts">
 import {nextTick, onMounted, onUnmounted} from 'vue'
-import {
-  ChatDotRound, Check, ArrowUp, User, Monitor, FolderOpened, Link, Ticket, Reading
-} from '@element-plus/icons-vue'
+import {  ChatDotRound, Check, ArrowUp, User, FolderOpened, Link, Ticket} from '@element-plus/icons-vue'
 import {Tools, CircleCheckFilled} from '@element-plus/icons-vue'
 import {
-  advantages,
-  allTechs, author, badges, contacts, coreMetrics, coreTechnologies,
-  getTechType, getTopicLevelType, handbookFeatures,
-  handbookTopics, handleTopicClick, memoryAllocation,
-  openGithubHandbook, optimizationTips, performanceData, projects,
-  repositories,
-  router, serverSpecs, serviceSpecs,
-  showBackToTop,
-  showDetails, skills, softwareSpecs
+  advantages, allTechs, author, badges, contacts, coreMetrics, coreTechnologies,  getTechType, getTopicLevelType, handbookFeatures,
+  handbookTopics, handleTopicClick, memoryAllocation,  openGithubHandbook, optimizationTips, performanceData, projects,
+  repositories,  router, serverSpecs, serviceSpecs,  showBackToTop,  showDetails, skills, softwareSpecs
 } from "@/assets/ts/constants.ts";
 
 

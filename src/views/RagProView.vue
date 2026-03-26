@@ -1,5 +1,4 @@
 <template>
-  <!-- 💡 核心滚动监听器保持在主容器 -->
   <div class="home-container" ref="homeContainer" @scroll="handleScroll">
     <div class="main-content">
 
@@ -34,8 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref} from 'vue'
+import {onUnmounted, ref} from 'vue'
 import {ArrowUp} from '@element-plus/icons-vue'
+
 const homeContainer = ref<HTMLElement | null>(null)
 
 // 💡 导入所有常量逻辑

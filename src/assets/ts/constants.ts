@@ -1,8 +1,6 @@
 import {Monitor, Reading} from "@element-plus/icons-vue";
-import {useRouter} from "vue-router";
 import {ref} from "vue";
 
-export const router = useRouter()
 export const showDetails = ref(false)
 export const showBackToTop = ref(false)
 export const homeContainer = ref<HTMLElement | null>(null)

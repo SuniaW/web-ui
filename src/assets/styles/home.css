@@ -151,7 +151,7 @@
 
 /* ==================== Hero Section ==================== */
 .hero-section {
-  margin: 40px 0 50px;
+  margin: 0 0 20px;
   position: relative;
 }
 
@@ -399,7 +399,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
-  margin-bottom: 50px;
+  margin-bottom: 5px;
 }
 
 .metric-item {
@@ -521,7 +521,7 @@
 
 /* ==================== 详情区块 ==================== */
 .details-section {
-  margin-top: 40px;
+  margin-top: 20px;
   scroll-margin-top: 100px;
 }
 
@@ -1116,7 +1116,7 @@
 .author-content {
   display: flex;
   gap: 50px;
-  padding: 50px;
+  padding: 30px;
   align-items: center;
   position: relative;
   z-index: 1;

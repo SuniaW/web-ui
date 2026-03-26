@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => {
-        return import('../views/HomeView.vue')
+        return import('../views/HomeView1.vue')
       },
     },
     {
@@ -26,6 +26,13 @@ const router = createRouter({
       path: `/chat/topic/:id`,
       component: () => {
         return import('../views/ManualMd.vue')
+      },
+      props: true,
+    },
+    {
+      path: `/chat/ragpro`,
+      component: () => {
+        return import('../views/RagProView.vue')
       },
       props: true,
     },

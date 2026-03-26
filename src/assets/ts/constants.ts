@@ -1,10 +1,4 @@
 import {Monitor, Reading} from "@element-plus/icons-vue";
-import {ref} from "vue";
-
-export const showDetails = ref(false)
-export const showBackToTop = ref(false)
-export const homeContainer = ref<HTMLElement | null>(null)
-
 
 // ==================== 学习手册数据 ====================
 export const handbookTopics = [

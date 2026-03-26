@@ -6,9 +6,7 @@
       <!-- 1. 欢迎区 -->
       <HomeHero
         :badges="badges"
-        :show-details="showDetails"
         @go-chat="goToChat"
-        @toggle-details="handleToggleDetails"
         @scroll-to="scrollToSection"
       />
 
@@ -36,17 +34,15 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick} from 'vue'
+import { onUnmounted, ref} from 'vue'
 import {ArrowUp} from '@element-plus/icons-vue'
+const homeContainer = ref<HTMLElement | null>(null)
 
 // 💡 导入所有常量逻辑
 import {
   badges,
   coreMetrics,
-  homeContainer,
   performanceData,
-  showBackToTop,
-  showDetails,
   softwareSpecs
 } from "@/assets/ts/constants.ts"
 import HomeTechDetails from "@/components/ragpro/HomeTechDetails.vue";
@@ -55,17 +51,7 @@ import HomeHero from "@/components/ragpro/HomeHero.vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
-
-// 💡 保持原有方法不改变
-const handleToggleDetails = () => {
-  showDetails.value = !showDetails.value
-  if (showDetails.value) {
-    nextTick(() => {
-      const el = document.getElementById('tech-section')
-      if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'})
-    })
-  }
-}
+const showBackToTop = ref(false)
 
 const goToChat = () => router.push('/chat/rag')
 
@@ -82,6 +68,11 @@ const handleScroll = (e: Event) => {
   const target = e.target as HTMLElement
   showBackToTop.value = target.scrollTop > 300
 }
+
+onUnmounted(() => {
+  // 离开页面时重置全局滚动状态，防止影响下一个页面
+  showBackToTop.value = false
+})
 </script>
 
-<style src="../assets/styles/home.css" scoped></style>
+

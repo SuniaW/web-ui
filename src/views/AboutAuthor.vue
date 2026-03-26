@@ -1,6 +1,6 @@
 <template>
   <!-- 💡 核心滚动监听器保持在主容器 -->
-  <div class="home-container" ref="homeContainer" @scroll="handleScroll">
+  <div class="home-container" ref="aboutContainer" @scroll="handleScroll">
     <div class="main-content">
       <!-- 4. 学习手册 -->
       <HomeHandbook
@@ -45,45 +45,33 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick} from 'vue'
 import {ArrowUp} from '@element-plus/icons-vue'
 
 // 💡 导入所有常量逻辑
 import {
-  author, badges, contacts, coreMetrics, handbookTopics,
-  handleTopicClick, homeContainer, openGithubHandbook,
-  performanceData, projects, router, showBackToTop,
-  showDetails, softwareSpecs
+  author, contacts, handbookTopics,
+  handleTopicClick, openGithubHandbook
+  , projects
 } from "@/assets/ts/constants.ts"
 import HomeAuthor from "@/components/ragpro/HomeAuthor.vue";
 import HomeHandbook from "@/components/ragpro/HomeHandbook.vue";
-
-// 💡 保持原有方法不改变
-const handleToggleDetails = () => {
-  showDetails.value = !showDetails.value
-  if (showDetails.value) {
-    nextTick(() => {
-      const el = document.getElementById('tech-section')
-      if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'})
-    })
-  }
-}
-
-const goToChat = () => router.push('/chat/rag')
-
-const scrollToSection = (id: string) => {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'})
-}
+import {onUnmounted, ref} from "vue";
+const aboutContainer = ref<HTMLElement | null>(null)
 
 const scrollToTop = () => {
-  if (homeContainer.value) homeContainer.value.scrollTo({top: 0, behavior: 'smooth'})
+  if (aboutContainer.value) aboutContainer.value.scrollTo({top: 0, behavior: 'smooth'})
 }
+const showBackToTop = ref(false)
 
 const handleScroll = (e: Event) => {
   const target = e.target as HTMLElement
   showBackToTop.value = target.scrollTop > 300
 }
+
+onUnmounted(() => {
+  // 离开页面时重置全局滚动状态，防止影响下一个页面
+  showBackToTop.value = false
+})
 </script>
 
 <style src="../assets/styles/home.css" scoped></style>

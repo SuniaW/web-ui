@@ -1,35 +1,41 @@
 <template>
-  <el-row :gutter="24" class="nav-grid-container">
-    <!-- 使用 v-for 循环渲染卡片 -->
-    <el-col
-      v-for="item in navCards"
-      :key="item.title"
-      :xs="24" :sm="12" :md="8"
-    >
-      <div class="card-wrapper" @click="handleGoto(item.path)">
-        <el-card :class="['custom-card', item.typeClass]" shadow="hover">
-          <div class="card-icon">
-            <!-- 动态渲染组件图标 -->
-            <el-icon :size="36">
-              <component :is="item.icon" />
-            </el-icon>
-          </div>
-          <h3 class="card-title">{{ item.title }}</h3>
-          <p class="card-desc">{{ item.desc }}</p>
-          <div class="card-arrow">
-            <span>{{ item.actionText }}</span>
-            <el-icon><ArrowRight /></el-icon>
-          </div>
-        </el-card>
-      </div>
-    </el-col>
-  </el-row>
+  <div>
+    <el-row :gutter="24" class="nav-grid-container">
+      <!-- 使用 v-for 循环渲染卡片 -->
+      <el-col
+        v-for="item in navCards"
+        :key="item.title"
+        :xs="24" :sm="12" :md="8"
+      >
+        <div class="card-wrapper" @click="handleGoto(item.path)">
+          <el-card :class="['custom-card', item.typeClass]" shadow="hover">
+            <div class="card-icon">
+              <!-- 动态渲染组件图标 -->
+              <el-icon :size="36">
+                <component :is="item.icon"/>
+              </el-icon>
+            </div>
+            <h3 class="card-title">{{ item.title }}</h3>
+            <p class="card-desc">{{ item.desc }}</p>
+            <div class="card-arrow">
+              <span>{{ item.actionText }}</span>
+              <el-icon>
+                <ArrowRight/>
+              </el-icon>
+            </div>
+          </el-card>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { markRaw } from 'vue';
-import { ChatDotRound, Sunny, UserFilled, ArrowRight } from '@element-plus/icons-vue';
-import router from "@/router";
+import {markRaw} from 'vue';
+import {ChatDotRound, Sunny, UserFilled, ArrowRight} from '@element-plus/icons-vue';
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 // 1. 定义数据模型
 const navCards = [
@@ -149,22 +155,40 @@ const handleGoto = (path: string) => {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
 }
-.card-rag:hover { border-color: #764ba2; }
-.card-rag:hover .card-arrow { color: #764ba2; }
+
+.card-rag:hover {
+  border-color: #764ba2;
+}
+
+.card-rag:hover .card-arrow {
+  color: #764ba2;
+}
 
 .card-weather .card-icon {
   background: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
   color: #fff;
 }
-.card-weather:hover { border-color: #0288d1; }
-.card-weather:hover .card-arrow { color: #0288d1; }
+
+.card-weather:hover {
+  border-color: #0288d1;
+}
+
+.card-weather:hover .card-arrow {
+  color: #0288d1;
+}
 
 .card-author .card-icon {
   background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
   color: #fff;
 }
-.card-author:hover { border-color: #fda085; }
-.card-author:hover .card-arrow { color: #fda085; }
+
+.card-author:hover {
+  border-color: #fda085;
+}
+
+.card-author:hover .card-arrow {
+  color: #fda085;
+}
 
 /* 响应式 */
 @media (max-width: 768px) {
@@ -174,14 +198,26 @@ const handleGoto = (path: string) => {
     text-align: left;
     gap: 15px;
   }
+
   .card-icon {
     width: 50px;
     height: 50px;
     margin-bottom: 0;
     flex-shrink: 0;
   }
-  .card-arrow { display: none; }
-  .card-title { font-size: 15px; margin-bottom: 4px; }
-  .card-desc { font-size: 12px; margin-bottom: 0; }
+
+  .card-arrow {
+    display: none;
+  }
+
+  .card-title {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    margin-bottom: 0;
+  }
 }
 </style>

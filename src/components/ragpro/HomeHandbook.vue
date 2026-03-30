@@ -116,3 +116,4 @@ defineProps<{ handbookTopics: any[] }>()
 defineEmits(['topic-click', 'open-github'])
 </script>
 <style src="../../assets/styles/home.css" scoped></style>
+<style src="../../assets/styles/glass.css" scoped></style>

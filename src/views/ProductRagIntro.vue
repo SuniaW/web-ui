@@ -113,5 +113,5 @@ onUnmounted(() => {
   showBackToTop.value = false
 })
 </script>
-
+<style src="../assets/styles/common.css" scoped/>
 

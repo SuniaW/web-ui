@@ -130,3 +130,4 @@ import {Check} from "@element-plus/icons-vue";
 defineProps<{ author: any, projects: any[] }>()
 </script>
 <style src="../../assets/styles/home.css" scoped></style>
+<style src="../../assets/styles/glass.css" scoped></style>

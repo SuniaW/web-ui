@@ -94,4 +94,5 @@ defineProps<{
 defineEmits(['go-chat', 'toggle-details', 'scroll-to'])
 </script>
 
-<style src="../../assets/styles/home.css" scoped></style>
+<style src="../../assets/styles/hero.css" scoped></style>
+<style src="../../assets/styles/glass.css" scoped></style>

@@ -266,4 +266,51 @@ const openLink = (url: string) => {
   window.open(url, '_blank')
 }
 </script>
-<style src="../../assets/styles/home.css"></style>
+<style src="../../assets/styles/home.css" scoped></style>
+<style src="../../assets/styles/glass.css" scoped></style>
+<style scoped>
+
+/* ==================== 详情区块 ==================== */
+.details-section {
+  margin-top: 20px;
+  scroll-margin-top: 100px;
+}
+
+.info-card {
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.info-card :deep(.el-card__header) {
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%);
+  border-bottom: 1px solid var(--border-color);
+  padding: 18px 24px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  font-size: 1.3rem;
+}
+
+.card-header span {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+</style>

@@ -32,7 +32,7 @@ const router = createRouter({
     {
       path: `/chat/rag`,
       component: () => {
-        return import('../views/RagProView.vue')
+        return import('../views/ProductRagIntro.vue')
       },
       props: true,
     },

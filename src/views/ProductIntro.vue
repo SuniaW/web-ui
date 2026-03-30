@@ -1,18 +1,13 @@
 <template>
-  <div class="home-container">
-    <!-- 背景装饰：点阵与光晕 -->
-    <div class="bg-dots"></div>
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-
-    <div class="scroll-content">
+  <div class="home-container" ref="homeContainer" @scroll="handleScroll">
+    <div class="main-content">
       <!-- 1. 头部标题区 (Hero Section) -->
       <HomeHero
         :badges="weatherBadges"
         :title="weatherTitle"
         :description="weatherDescription"
         :button-config="weatherButton"
-        @go-chat="handleGoChat"
+        @go-chat="goToChat"
       />
 
       <!-- 2. 核心技术卖点 (Features) -->
@@ -73,7 +68,7 @@
           </div>
         </div>
       </div>
-    </div>
+  </div>
   </div>
 </template>
 
@@ -165,237 +160,8 @@ onUnmounted(() => {
 
 </script>
 
+<style src="../assets/styles/common.css" scoped/>
 <style scoped>
-/* 容器与背景 */
-.home-container {
-  width: 100%;
-  height: 100vh;
-  overflow-y: auto;
-  background: linear-gradient(180deg, #f8fafc 0%, #eef2f6 50%, #f1f5f9 100%);
-  scroll-behavior: smooth;
-  position: relative;
-}
-
-.home-container::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(64, 158, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(102, 126, 234, 0.03) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-
-/* ==================== 玻璃态效果 ==================== */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.bg-dots {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-  background-size: 20px 20px;
-  mask-image: radial-gradient(circle at center, black, transparent 70%);
-  z-index: 0;
-  opacity: 0.5;
-}
-
-.glow-sphere {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.08;
-  z-index: 1;
-}
-.sphere-1 { top: -150px; left: -150px; background: #3b82f6; }
-.sphere-2 { bottom: -150px; right: -150px; background: #8b5cf6; }
-
-.scroll-content {
-  position: relative;
-  z-index: 2;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 60px 24px;
-}
-
-/* Hero Section */
-.hero-section {
-  text-align: center;
-  margin-bottom: 80px;
-  background: #ffffff;
-  padding: 60px 40px;
-  border-radius: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #ffffff;
-}
-
-.badge-item {
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0 6px;
-  backdrop-filter: blur(10px);
-}
-.badge-item.primary {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-.badge-item.success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.main-title {
-  font-size: 56px;
-  margin: 24px 0;
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: #1e293b;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.description {
-  font-size: 18px;
-  color: #64748b;
-  max-width: 800px;
-  margin: 0 auto 40px;
-  line-height: 1.8;
-}
-
-.highlight {
-  color: #1e293b;
-  font-weight: 600;
-  background: #f1f5f9;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-.highlight-alt {
-  color: #1e293b;
-  font-weight: 600;
-  background: #f1f5f9;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-.cta-button {
-  height: 54px;
-  padding: 0 32px;
-  font-size: 16px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border: none;
-  border-radius: 27px;
-  box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);
-  transition: all 0.3s;
-}
-.cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.6);
-}
-
-/* Feature Cards */
-.feature-card-wrapper {
-  opacity: 0;
-  animation: fadeInUp 0.8s var(--delay) forwards;
-}
-
-.glass-card {
-  background: #ffffff !important;
-  backdrop-filter: blur(12px);
-  border: 1px solid #f1f5f9 !important;
-  border-radius: 24px !important;
-  padding: 32px 24px;
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.glass-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  border-color: #e2e8f0 !important;
-}
-
-.icon-glow {
-  position: absolute;
-  top: -20px;
-  left: -20px;
-  width: 100px;
-  height: 100px;
-  filter: blur(40px);
-  opacity: 0.1;
-}
-
-.icon-wrapper {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-.glass-card h3 {
-  font-size: 20px;
-  color: #1e293b;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-.glass-card p {
-  font-size: 15px;
-  color: #64748b;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-
-.card-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 16px;
-}
-
-.tech-label {
-  font-size: 11px;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.tech-value {
-  font-size: 13px;
-  font-weight: 600;
-  font-family: monospace;
-}
-
 /* Workflow Section */
 .workflow-container {
   margin-top: 100px;
@@ -417,6 +183,7 @@ onUnmounted(() => {
   height: 1px;
   background: #e2e8f0;
 }
+
 .section-label {
   font-size: 12px;
   color: #64748b;
@@ -498,3 +265,4 @@ onUnmounted(() => {
   }
 }
 </style>
+

@@ -93,14 +93,14 @@ const weatherTitle = {
 // 3. 描述文本数据 (Description)
 // 这里的拆分完全对应模板中的 strong 标签位置
 const weatherDescription = {
-  prefix: '超越传统预报。利用 ',
+  prefix: '利用 ',
   hl1: 'Function Calling',              // 第一个高亮词
-  middle: ' 技术直连实时气象数据，结合 ',
-  hl2: 'DeepSeek-R1',                 // 第二个高亮词
-  suffix: ' 推理能力，为您定制专业级的穿衣与出行建议。',
-  line2Prefix: '',                     // 这张图只有一行长文本，此处留空
-  hl3: '',
-  line2Suffix: ''
+  middle: '技术直连实时气象数据 ',
+  hl2: '',                 // 第二个高亮词
+  suffix: ' ',
+  line2Prefix: '结合',                     // 这张图只有一行长文本，此处留空
+  hl3: 'DeepSeek-R1',
+  line2Suffix: '推理能力为您定制专业级的穿衣与出行建议'
 };
 
 // 4. 按钮配置 (Button)
@@ -164,7 +164,7 @@ onUnmounted(() => {
 <style scoped>
 /* Workflow Section */
 .workflow-container {
-  margin-top: 100px;
+  margin-top: 20px;
   background: #ffffff;
   border-radius: 32px;
   padding: 40px;
